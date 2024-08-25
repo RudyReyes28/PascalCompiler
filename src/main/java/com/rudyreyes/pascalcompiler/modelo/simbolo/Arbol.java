@@ -145,7 +145,7 @@ public class Arbol {
         return resultado.toString();
     }*/
 
-     public LinkedList<Instruccion> getFunciones() {
+    public LinkedList<Instruccion> getFunciones() {
         return funciones;
     }
 

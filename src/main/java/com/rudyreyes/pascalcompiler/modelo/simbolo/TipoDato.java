@@ -9,8 +9,8 @@ package com.rudyreyes.pascalcompiler.modelo.simbolo;
  * @author rudyo
  */
 public enum TipoDato {
-    ENTERO,
-    DECIMAL,
+    INTEGER,
+    REAL,
     BOOLEANO,
     CARACTER,
     CADENA,
