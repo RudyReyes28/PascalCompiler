@@ -4,6 +4,12 @@
  */
 package com.rudyreyes.pascalcompiler.vista.principal;
 
+import com.rudyreyes.pascalcompiler.controlador.analisis.parser;
+import com.rudyreyes.pascalcompiler.controlador.analisis.scanner;
+import com.rudyreyes.pascalcompiler.modelo.abstracto.Instruccion;
+import com.rudyreyes.pascalcompiler.modelo.errores.Errores;
+import com.rudyreyes.pascalcompiler.modelo.simbolo.Arbol;
+import com.rudyreyes.pascalcompiler.modelo.simbolo.TablaSimbolos;
 import com.rudyreyes.pascalcompiler.vista.util.NumeroDeLinea;
 import java.awt.Component;
 import java.awt.Font;
@@ -15,10 +21,15 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.LinkedList;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JViewport;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -67,6 +78,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         btnAbrirArchivo = new javax.swing.JMenuItem();
         btnNuevoArchivo = new javax.swing.JMenuItem();
         btnReportes = new javax.swing.JMenu();
+        jMenu1 = new javax.swing.JMenu();
+        btnEjecutar = new javax.swing.JMenuItem();
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -151,6 +164,18 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         btnReportes.setText("Reportes");
         jMenuBar1.add(btnReportes);
+
+        jMenu1.setText("Ejecutar");
+
+        btnEjecutar.setText("Analizar");
+        btnEjecutar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEjecutarActionPerformed(evt);
+            }
+        });
+        jMenu1.add(btnEjecutar);
+
+        jMenuBar1.add(jMenu1);
 
         setJMenuBar(jMenuBar1);
 
@@ -277,6 +302,66 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnNuevoArchivoActionPerformed
 
+    private void btnEjecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEjecutarActionPerformed
+        String contenido="";
+        int selectedIndex = areaCodigo.getSelectedIndex();
+        if (selectedIndex != -1) {
+            JScrollPane scrollPane = (JScrollPane) areaCodigo.getComponentAt(selectedIndex);
+            JViewport viewport = scrollPane.getViewport();
+            JTextArea textArea = (JTextArea) viewport.getView();
+            contenido = textArea.getText();
+       
+        try{
+         scanner s = new scanner(new BufferedReader(new StringReader(contenido)));
+                parser p = new parser(s);
+                var resultado = p.parse();
+                
+                if (resultado != null) {
+                    var ast = new Arbol((LinkedList<Instruccion>) resultado.value);
+                    var tabla = new TablaSimbolos();
+                    tabla.setNombre("GLOBAL");
+                    ast.setConsola("");
+                    ast.setTablaGlobal(tabla);
+                    
+                    LinkedList<Object> lista = new LinkedList<>();
+                    
+                    lista.addAll(s.listaErrores);
+                    lista.addAll(p.listaErrores);
+                 
+                    //almacenar funciones, metodos o structs
+                   
+                    for (var a : ast.getInstrucciones()) {
+                        if (a == null) {
+                            continue;
+                        }
+                        var res = a.interpretar(ast, tabla);
+                        
+                        if (res instanceof Errores) {
+                            
+                            lista.add((Errores) res);
+                        }
+                    }
+                    areaConsola.setText(ast.getConsola());
+                    
+                    for (var i : lista) {
+                        areaConsola.append(i.toString()+"\n");
+                    }
+                }
+                } catch (Exception ex) {
+                //areaConsola.setText("Algo salio mal: "+ex);
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                ex.printStackTrace(pw);
+                String stackTrace = sw.toString();
+
+                // Muestra el mensaje y el stack trace en el área de consola
+                areaConsola.setText("Algo salió mal: " + ex.getMessage() + "\n" + stackTrace);
+            }
+        }else{
+            areaConsola.setText("No hay pestañas abiertas");
+        }
+    }//GEN-LAST:event_btnEjecutarActionPerformed
+
     
         /**
      * @param args the command line arguments
@@ -317,11 +402,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JTabbedPane areaCodigo;
     private javax.swing.JTextArea areaConsola;
     private javax.swing.JMenuItem btnAbrirArchivo;
+    private javax.swing.JMenuItem btnEjecutar;
     private javax.swing.JMenuItem btnNuevoArchivo;
     private javax.swing.JMenu btnReportes;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;

@@ -10,7 +10,5 @@ package com.rudyreyes.pascalcompiler;
  */
 public class PascalCompiler {
 
-    public static void main(String[] args) {
-        System.out.println("Hello World!");
-    }
+   
 }

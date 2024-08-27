@@ -47,6 +47,9 @@ public class OperadorNot extends Instruccion{
         }else if(tipo1 == TipoDato.INTEGER){
             boolean valor1 = ((int) op1 != 0);
             return !valor1;
+        }else if(tipo1 == TipoDato.CARACTER){
+            boolean valor1 = ((int) op1.toString().charAt(0)) != 0;
+            return !valor1;
         }
         
         else{

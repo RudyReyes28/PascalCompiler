@@ -15,11 +15,11 @@ import com.rudyreyes.pascalcompiler.modelo.simbolo.TipoDato;
  *
  * @author rudyo
  */
-public class OperadorOr extends Instruccion{
+public class OperadorAndThen extends Instruccion{
     private Instruccion operando1;
     private Instruccion operando2;
     
-    public OperadorOr(Instruccion operando1, Instruccion operando2, int linea, int columna) {
+    public OperadorAndThen(Instruccion operando1, Instruccion operando2, int linea, int columna) {
         super(new Tipo(TipoDato.BOOLEANO), linea, columna);
         this.operando1 = operando1;
         this.operando2 = operando2;
@@ -33,16 +33,18 @@ public class OperadorOr extends Instruccion{
         if (opIzq instanceof Errores) {
             return opIzq;
         }
+        
+        //aqui deberia realizar la operacion si es false y retornar un false
         opDer = this.operando2.interpretar(arbol, tabla);
         if (opDer instanceof Errores) {
             return opDer;
         }
         
         
-        return operacionOr(opIzq, opDer);
+        return operacionAndThen(opIzq, opDer);
     }
     
-    public Object operacionOr(Object op1, Object op2){
+    public Object operacionAndThen(Object op1, Object op2){
         var tipo1 = this.operando1.tipo.getTipo();
         var tipo2 = this.operando2.tipo.getTipo();
         
@@ -55,7 +57,7 @@ public class OperadorOr extends Instruccion{
                         this.tipo.setTipo(TipoDato.BOOLEANO);
                         boolean valor1 = op1 instanceof Boolean ? (Boolean) op1 : Boolean.valueOf(op1.toString().toLowerCase());
                         boolean valor2 = op2 instanceof Boolean ? (Boolean) op2 : Boolean.valueOf(op2.toString().toLowerCase());
-                        return valor1 || valor2;
+                        return valor1 && valor2;
                     }
                     
                     case CARACTER -> {
@@ -63,7 +65,7 @@ public class OperadorOr extends Instruccion{
                         boolean valor1 = op1 instanceof Boolean ? (Boolean) op1 : Boolean.valueOf(op1.toString().toLowerCase());
 
                         boolean valor2 = ((int) op2.toString().charAt(0)) != 0;
-                        return valor1 || valor2;
+                        return valor1 && valor2;
                     }
 
                     
@@ -71,7 +73,7 @@ public class OperadorOr extends Instruccion{
                         this.tipo.setTipo(TipoDato.BOOLEANO);
                         boolean valor1 = op1 instanceof Boolean ? (Boolean) op1 : Boolean.valueOf(op1.toString().toLowerCase());
                         boolean valor2 = ((int) op2 != 0);
-                        return valor1 || valor2;
+                        return valor1 && valor2;
                     }
                     default -> {
                         return new Errores("SEMANTICO", "Expresion Logica erronea: la operacion "+op1.toString()+" no se puede operar(AND) con la operacion "+op2.toString(), this.linea, this.columna);
@@ -88,7 +90,7 @@ public class OperadorOr extends Instruccion{
                         this.tipo.setTipo(TipoDato.BOOLEANO);
                         boolean valor1 = ((int) op1.toString().charAt(0))!= 0;
                         boolean valor2 = ((int) op2 != 0);
-                        return  valor1 || valor2 ;
+                        return  valor1 && valor2 ;
                         
                         
                     }
@@ -97,14 +99,14 @@ public class OperadorOr extends Instruccion{
                         this.tipo.setTipo(TipoDato.BOOLEANO);
                          boolean valor1 = ((int) op1.toString().charAt(0))!= 0;
                         boolean valor2 = op2 instanceof Boolean ? (Boolean) op2 : Boolean.valueOf(op2.toString().toLowerCase());
-                        return valor1 || valor2;
+                        return valor1 && valor2;
                     }
                     
                     case CARACTER -> {
                         this.tipo.setTipo(TipoDato.BOOLEANO);
                          boolean valor1 = ((int) op1.toString().charAt(0))!= 0;
                           boolean valor2 = ((int) op2.toString().charAt(0))!= 0;
-                        return  valor1 || valor2 ;
+                        return  valor1 && valor2 ;
                     }
                     
                     default -> {
@@ -120,21 +122,21 @@ public class OperadorOr extends Instruccion{
                         this.tipo.setTipo(TipoDato.BOOLEANO);
                         boolean valor1 = ((int) op1 != 0);
                         boolean valor2 = op2 instanceof Boolean ? (Boolean) op2 : Boolean.valueOf(op2.toString().toLowerCase());
-                        return valor1 || valor2;
+                        return valor1 && valor2;
                     }
                     
                     case CARACTER -> {
                         this.tipo.setTipo(TipoDato.BOOLEANO);
                         boolean valor1 = ((int) op1 != 0); 
                         boolean valor2 = ((int) op2.toString().charAt(0))!= 0;
-                        return  valor1 || valor2 ;
+                        return  valor1 && valor2 ;
                     }
                     
                     case INTEGER -> {
                         this.tipo.setTipo(TipoDato.BOOLEANO);
                          boolean valor1 = ((int) op1 != 0);                        
                          boolean valor2 = ((int) op2 != 0);
-                        return valor1 || valor2;
+                        return valor1 && valor2;
                     }
                     default -> {
                         return new Errores("SEMANTICO", "Expresion Logica erronea: la operacion "+op1.toString()+" no se puede operar(AND) con la operacion "+op2.toString(), this.linea, this.columna);
@@ -146,7 +148,7 @@ public class OperadorOr extends Instruccion{
                 
             }
             default -> {
-                return new Errores("SEMANTICO", "Tipo de dato no soportado para la operacion logica (OR) : " + tipo1, this.linea, this.columna);
+                return new Errores("SEMANTICO", "Tipo de dato no soportado para la operacion logica (AND THEN) : " + tipo1, this.linea, this.columna);
             }
         }
     

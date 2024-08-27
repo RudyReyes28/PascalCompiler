@@ -10,16 +10,15 @@ import com.rudyreyes.pascalcompiler.modelo.simbolo.Arbol;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.TablaSimbolos;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.Tipo;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.TipoDato;
-
 /**
  *
  * @author rudyo
  */
-public class OperadorOr extends Instruccion{
+public class OperadorOrThen extends Instruccion{
     private Instruccion operando1;
     private Instruccion operando2;
     
-    public OperadorOr(Instruccion operando1, Instruccion operando2, int linea, int columna) {
+    public OperadorOrThen(Instruccion operando1, Instruccion operando2, int linea, int columna) {
         super(new Tipo(TipoDato.BOOLEANO), linea, columna);
         this.operando1 = operando1;
         this.operando2 = operando2;
@@ -152,5 +151,6 @@ public class OperadorOr extends Instruccion{
     
     
     }
+    
     
 }

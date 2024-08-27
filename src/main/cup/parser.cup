@@ -1,1 +1,129 @@
+package com.rudyreyes.pascalcompiler.controlador.analisis;
 
+//importaciones
+import java_cup.runtime.Symbol;
+import java.util.LinkedList;
+import com.rudyreyes.pascalcompiler.modelo.abstracto.Instruccion;
+import com.rudyreyes.pascalcompiler.modelo.simbolo.*;
+import java.util.HashMap;
+
+//instrucciones
+import com.rudyreyes.pascalcompiler.modelo.instrucciones.writeln.*;
+
+//expresiones
+import com.rudyreyes.pascalcompiler.modelo.expresiones.nativo.*;
+import com.rudyreyes.pascalcompiler.modelo.expresiones.aritmeticas.*;
+import com.rudyreyes.pascalcompiler.modelo.expresiones.relacionales.*;
+import com.rudyreyes.pascalcompiler.modelo.expresiones.logicas.*;
+import com.rudyreyes.pascalcompiler.modelo.errores.*;
+
+// parser
+parser code
+{:
+    scanner s;
+    parser(scanner s){this.s = s;}
+    
+    public LinkedList<Errores> listaErrores = new LinkedList<>();
+    
+    public void syntax_error(Symbol s){
+        listaErrores.add(new Errores("SINTACTICO RECUPERABLE",
+                        "No se esperaba el componente "+s.value,
+                        s.left,
+                        s.right));
+    }
+
+    public void unrecovered_syntax_error (Symbol s){
+        listaErrores.add(new Errores("SINTACTICO NO RECUPERABLE",
+                        "No se esperaba el componente "+s.value,
+                        s.left,
+                        s.right));
+    }
+
+:}
+
+action code
+{:
+:}
+
+//terminales
+terminal String CADENA, ENTERO, DECIMAL, ID;
+terminal FINCADENA, IMPRIMIR;
+terminal BEGIN, END, PUNTO;
+terminal PAR1, PAR2, MAS, MENOS, UMENOS, MULT, DIV, DIVE, MOD;
+terminal DIFERENTE, MENOR, MENORIGUAL, MAYOR, MAYORIGUAL, IGUAL;
+terminal NOT, AND, THEN, ELSE, OR, ANDT, ORE;
+terminal String BOOLEAN, CARACTER;
+
+//no terminales
+nonterminal LinkedList<Instruccion> inicio, instrucciones;
+nonterminal Instruccion instruccion;
+nonterminal Instruccion expresion, expresionAritmetica, expresionRelacional, expresionLogica;
+
+nonterminal Instruccion writeln;
+
+precedence left ANDT, ORE;
+precedence left OR;
+precedence left AND;
+precedence right NOT;
+precedence left IGUAL, DIFERENTE, MENOR, MENORIGUAL,MAYOR,  MAYORIGUAL;
+precedence left MAS, MENOS;
+precedence left MULT, DIV, MOD, DIVE;
+precedence right UMENOS;
+
+start with inicio;
+
+inicio ::= BEGIN instrucciones:a  END PUNTO    {:   RESULT = a;   :}
+;
+
+instrucciones ::= instrucciones:a instruccion:b     {: RESULT = a; RESULT.add(b); :}
+                | instruccion:a                     {: RESULT = new LinkedList<>(); RESULT.add(a); :}
+;
+
+instruccion ::= writeln:a                   {: RESULT= a; :}
+                | error FINCADENA
+                | error 
+;
+
+
+writeln ::= IMPRIMIR PAR1 expresion:a PAR2 FINCADENA      {:   RESULT = new Writeln(a, aleft, aright);   :}
+;
+
+
+//AGREGAR UNA EXPRESION COMA
+expresion ::=  expresionAritmetica:a        {: RESULT = a; :}
+            | expresionRelacional: a        {: RESULT = a; :}
+            | expresionLogica:a             {: RESULT = a; :}
+            | ENTERO:a                      {:   RESULT = new Nativo(Integer.parseInt(a), new Tipo(TipoDato.INTEGER), aleft, aright );   :}
+            | DECIMAL:a                     {:   RESULT = new Nativo(new Double(a), new Tipo(TipoDato.REAL), aleft, aright );   :}
+            | CADENA:a                      {:   RESULT = new Nativo(a, new Tipo(TipoDato.CADENA), aleft, aright );   :}
+            | CARACTER:a                    {:   RESULT = new Nativo(a, new Tipo(TipoDato.CARACTER), aleft, aright );   :}
+            | BOOLEAN:a                     {:   RESULT = new Nativo(Boolean.parseBoolean(a), new Tipo(TipoDato.BOOLEANO), aleft, aright );   :}
+            
+;
+
+expresionAritmetica ::= MENOS expresion:a             {:   RESULT = new OperacionNegacionU(a, aleft, aright);   :} %prec UMENOS
+            | expresion:a MAS expresion:b           {:   RESULT = new OperacionSuma(a, b, aleft, aright);   :}
+            | expresion:a MENOS expresion:b         {:  RESULT = new OperacionResta(a, b, aleft, aright);  :}
+            | expresion:a MULT expresion:b          {:   RESULT = new OperacionMultiplicacion(a, b, aleft, aright);   :}
+            | expresion:a DIV expresion:b           {:  RESULT = new OperacionDivision (a, b, aleft, aright);   :}
+            | expresion:a DIVE expresion:b           {:  RESULT = new OperacionDiv(a, b, aleft, aright);   :}
+            | expresion:a MOD expresion:b           {:  RESULT = new OperacionModulo (a, b, aleft, aright);   :}
+            | PAR1 expresion:a PAR2                 {:   RESULT = a;   :}
+;
+
+expresionRelacional ::= expresion:a IGUAL expresion:b   {:   RESULT = new Igualacion(a, b, aleft, aright);   :} %prec IGUAL
+                    | expresion:a DIFERENTE expresion:b     {:   RESULT = new Diferenciacion(a, b, aleft, aright);   :} %prec DIFERENTE
+                    | expresion:a MENOR expresion:b         {:   RESULT = new MenorQue(a, b, aleft, aright);   :} %prec MENOR
+                    | expresion:a MENORIGUAL expresion:b    {:   RESULT = new MenorIgualQue(a, b, aleft, aright);   :} %prec MENORIGUAL
+                    | expresion:a MAYOR expresion:b         {:   RESULT = new MayorQue(a, b, aleft, aright);   :} %prec MAYOR
+                    | expresion:a MAYORIGUAL expresion:b    {:   RESULT = new MayorIgualQue(a, b, aleft, aright);   :} %prec MAYORIGUAL
+
+;
+
+expresionLogica ::= NOT expresion:a                 {:   RESULT = new OperadorNot(a, aleft, aright);   :} %prec NOT
+                | expresion:a AND expresion:b       {:   RESULT = new OperadorAnd(a, b, aleft, aright);   :} %prec AND
+                | expresion:a OR expresion:b        {:   RESULT = new OperadorOr(a, b, aleft, aright);   :} %prec OR
+                | expresion:a AND THEN expresion:b        {:   RESULT = new OperadorAndThen(a, b, aleft, aright);   :} %prec ANDT
+                | expresion:a OR ELSE expresion:b        {:   RESULT = new OperadorOrThen(a, b, aleft, aright);   :} %prec ORE
+
+;
