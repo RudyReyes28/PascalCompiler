@@ -9,12 +9,14 @@ import java.util.HashMap;
 
 //instrucciones
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.writeln.*;
+import com.rudyreyes.pascalcompiler.modelo.instrucciones.variables.*;
 
 //expresiones
 import com.rudyreyes.pascalcompiler.modelo.expresiones.nativo.*;
 import com.rudyreyes.pascalcompiler.modelo.expresiones.aritmeticas.*;
 import com.rudyreyes.pascalcompiler.modelo.expresiones.relacionales.*;
 import com.rudyreyes.pascalcompiler.modelo.expresiones.logicas.*;
+import com.rudyreyes.pascalcompiler.modelo.expresiones.variables.*;
 import com.rudyreyes.pascalcompiler.modelo.errores.*;
 
 // parser
@@ -48,18 +50,21 @@ action code
 //terminales
 terminal String CADENA, ENTERO, DECIMAL, ID;
 terminal FINCADENA, IMPRIMIR;
-terminal BEGIN, END, PUNTO;
+terminal BEGIN, END, PUNTO, VAR, CONST, DOSPUNTOS, COMA;
+terminal INTEGER, REAL, VOID, BOOL, STRING, CHAR;
 terminal PAR1, PAR2, MAS, MENOS, UMENOS, MULT, DIV, DIVE, MOD;
 terminal DIFERENTE, MENOR, MENORIGUAL, MAYOR, MAYORIGUAL, IGUAL;
 terminal NOT, AND, THEN, ELSE, OR, ANDT, ORE;
 terminal String BOOLEAN, CARACTER;
 
 //no terminales
-nonterminal LinkedList<Instruccion> inicio, instrucciones;
+nonterminal LinkedList<Instruccion> estructura, instrucciones,cuerpo ;
+nonterminal LinkedList<Instruccion> declaracion_variables, declaracion_constantes;
+nonterminal Tipo tipos_variable;
 nonterminal Instruccion instruccion;
 nonterminal Instruccion expresion, expresionAritmetica, expresionRelacional, expresionLogica;
-
-nonterminal Instruccion writeln;
+nonterminal LinkedList<String> listado_id;
+nonterminal Instruccion writeln, asignacion_variable;
 
 precedence left ANDT, ORE;
 precedence left OR;
@@ -70,9 +75,15 @@ precedence left MAS, MENOS;
 precedence left MULT, DIV, MOD, DIVE;
 precedence right UMENOS;
 
-start with inicio;
+start with cuerpo;
 
-inicio ::= BEGIN instrucciones:a  END PUNTO    {:   RESULT = a;   :}
+cuerpo ::= cuerpo:a estructura:b {: RESULT = a; RESULT.addAll(b); :}
+            | estructura: a {: RESULT = new LinkedList<>();  RESULT.addAll(a);:}
+;
+
+estructura ::=   CONST declaracion_constantes:a {: RESULT = a; :}
+                | VAR declaracion_variables:a {: RESULT = a; :}
+                |BEGIN instrucciones:a  END PUNTO    {:   RESULT = a;   :}
 ;
 
 instrucciones ::= instrucciones:a instruccion:b     {: RESULT = a; RESULT.add(b); :}
@@ -80,14 +91,48 @@ instrucciones ::= instrucciones:a instruccion:b     {: RESULT = a; RESULT.add(b)
 ;
 
 instruccion ::= writeln:a                   {: RESULT= a; :}
+                | asignacion_variable:a        {: RESULT= a; :}
                 | error FINCADENA
                 | error 
 ;
 
+declaracion_constantes ::=   declaracion_constantes:a ID:b IGUAL expresion:c FINCADENA 
+                                    {:RESULT = a;  
+                                    RESULT.add(new DeclaracionConstante(false, b,c, new Tipo(TipoDato.INTEGER),bleft, bright)); :}  
+                        |ID:b IGUAL expresion:c FINCADENA  
+                                                    {:RESULT = new LinkedList<Instruccion>(); 
+                                                    RESULT.add(new DeclaracionConstante(false, b,c, new Tipo(TipoDato.INTEGER),bleft, bright)); :}
 
+;
+
+
+declaracion_variables ::= declaracion_variables:a listado_id:b DOSPUNTOS tipos_variable:c FINCADENA 
+                                    {: RESULT =a ; RESULT.add(new DeclaracionVariable(true, b,null, c,aleft, aright)); :}
+                            |listado_id:a DOSPUNTOS tipos_variable:b FINCADENA 
+                                    {:RESULT = new LinkedList<Instruccion>(); 
+                                                    RESULT.add(new DeclaracionVariable(true, a,null, b,aleft, aright)); :}
+
+;
+
+listado_id ::= listado_id:a COMA ID:e {: RESULT = a;
+                                                    RESULT.add(e);:}
+            | ID:a {:RESULT = new LinkedList<String>(); 
+                                                    RESULT.add(a);:}
+;
+
+tipos_variable ::= INTEGER       {:   RESULT=new Tipo(TipoDato.INTEGER);   :}
+                | REAL    {:   RESULT=new Tipo(TipoDato.REAL);   :}
+                | STRING    {:   RESULT=new Tipo(TipoDato.CADENA);   :}
+                | CHAR      {:   RESULT=new Tipo(TipoDato.CARACTER);   :}
+                | BOOL      {:   RESULT=new Tipo(TipoDato.BOOLEANO);   :}
+                | VOID      {:   RESULT=new Tipo(TipoDato.VOID);   :}
+;
 writeln ::= IMPRIMIR PAR1 expresion:a PAR2 FINCADENA      {:   RESULT = new Writeln(a, aleft, aright);   :}
 ;
 
+
+ asignacion_variable ::= ID:a DOSPUNTOS IGUAL expresion:b FINCADENA  {:   RESULT=new AsignacionVariable(a, b, aleft, aright);  :}
+;
 
 //AGREGAR UNA EXPRESION COMA
 expresion ::=  expresionAritmetica:a        {: RESULT = a; :}
@@ -98,7 +143,7 @@ expresion ::=  expresionAritmetica:a        {: RESULT = a; :}
             | CADENA:a                      {:   RESULT = new Nativo(a, new Tipo(TipoDato.CADENA), aleft, aright );   :}
             | CARACTER:a                    {:   RESULT = new Nativo(a, new Tipo(TipoDato.CARACTER), aleft, aright );   :}
             | BOOLEAN:a                     {:   RESULT = new Nativo(Boolean.parseBoolean(a), new Tipo(TipoDato.BOOLEANO), aleft, aright );   :}
-            
+            | ID:a                          {:   RESULT = new AccesoVariable(a, aleft, aright);   :}
 ;
 
 expresionAritmetica ::= MENOS expresion:a             {:   RESULT = new OperacionNegacionU(a, aleft, aright);   :} %prec UMENOS

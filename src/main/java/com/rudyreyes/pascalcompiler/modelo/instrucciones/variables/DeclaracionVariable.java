@@ -44,7 +44,7 @@ public class DeclaracionVariable extends Instruccion{
                     valor =  new Nativo('0', new Tipo(TipoDato.CARACTER), linea, columna-1 );
                     break;
                 case BOOLEANO:
-                    valor =  new Nativo(true, new Tipo(TipoDato.BOOLEANO), linea, columna-1 );
+                    valor =  new Nativo(false, new Tipo(TipoDato.BOOLEANO), linea, columna-1 );
                     break;
             }
         }

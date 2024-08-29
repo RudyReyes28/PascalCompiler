@@ -39,12 +39,12 @@ DIV = "/"
 DIVE = "div"
 MOD = "mod"
 FINCADENA=";"
-//DOSPUNTOS = ":"
+DOSPUNTOS = ":"
 //LLAVE1="{"
 //LLAVE2="}"
 //CORCHETE1 = "["
 //CORCHETE2 = "]"
-//COMA = ","
+COMA = ","
 PUNTO = "."
 
 //simbolos de op relacionales
@@ -83,12 +83,28 @@ COMENTARIOMULTI = "(*"([^*]|\*[^/])*"\*)"
 IMPRIMIR="writeln"
 BEGIN = "begin"
 END = "end"
+VAR = "var"
+CONST = "const"
+
+INTEGER = "integer"
+CHAR = "char"
+REAL = "real"
+STRING = "String"
+BOOL = "boolean"
 
 %%
 
 <YYINITIAL> {IMPRIMIR}  {return new Symbol(sym.IMPRIMIR, yyline, yycolumn,yytext());}
 <YYINITIAL> {BEGIN}           {return new Symbol(sym.BEGIN, yyline, yycolumn,yytext());}
 <YYINITIAL> {END}           {return new Symbol(sym.END, yyline, yycolumn,yytext());}
+<YYINITIAL> {VAR}           {return new Symbol(sym.VAR, yyline, yycolumn,yytext());}
+<YYINITIAL> {CONST}           {return new Symbol(sym.CONST, yyline, yycolumn,yytext());}
+
+<YYINITIAL> {INTEGER}       {return new Symbol(sym.INTEGER, yyline, yycolumn,yytext());}
+<YYINITIAL> {CHAR}      {return new Symbol(sym.CHAR, yyline, yycolumn,yytext());}
+<YYINITIAL> {REAL}    {return new Symbol(sym.REAL, yyline, yycolumn,yytext());}
+<YYINITIAL> {STRING}    {return new Symbol(sym.STRING, yyline, yycolumn,yytext());}
+<YYINITIAL> {BOOL}      {return new Symbol(sym.BOOL, yyline, yycolumn,yytext());}
 
 
 <YYINITIAL> {OR}    {return new Symbol(sym.OR, yyline, yycolumn,yytext());}
@@ -128,7 +144,8 @@ END = "end"
 
 <YYINITIAL> {FINCADENA}     {return new Symbol(sym.FINCADENA, yyline, yycolumn,yytext());}
 <YYINITIAL> {PUNTO}        {return new Symbol(sym.PUNTO, yyline, yycolumn,yytext());}
-
+<YYINITIAL> {DOSPUNTOS}        {return new Symbol(sym.DOSPUNTOS, yyline, yycolumn,yytext());}
+<YYINITIAL> {COMA}        {return new Symbol(sym.COMA, yyline, yycolumn,yytext());}
 
 <YYINITIAL> {PAR1}          {return new Symbol(sym.PAR1, yyline, yycolumn,yytext());}
 <YYINITIAL> {PAR2}          {return new Symbol(sym.PAR2, yyline, yycolumn,yytext());}
