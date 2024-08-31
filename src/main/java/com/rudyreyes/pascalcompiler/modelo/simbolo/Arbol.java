@@ -18,6 +18,7 @@ public class Arbol {
     private LinkedList<Instruccion> instrucciones;
     private String consola;
     private TablaSimbolos tablaGlobal;
+    private TablaTipos tablaTipos; 
     public  LinkedList<Errores> errores;
     public List<TablaSimbolos> tablasEntornos;
     private LinkedList<Instruccion> funciones;
@@ -57,6 +58,18 @@ public class Arbol {
     public void setTablaGlobal(TablaSimbolos tablaGlobal) {
         this.tablaGlobal = tablaGlobal;
     }
+
+    public TablaTipos getTablaTipos() {
+        return tablaTipos;
+    }
+
+    public void setTablaTipos(TablaTipos tablaTipos) {
+        this.tablaTipos = tablaTipos;
+    }
+
+    
+    
+    
 
     public LinkedList<Errores> getErrores() {
         return errores;

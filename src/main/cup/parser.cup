@@ -17,6 +17,7 @@ import com.rudyreyes.pascalcompiler.modelo.expresiones.aritmeticas.*;
 import com.rudyreyes.pascalcompiler.modelo.expresiones.relacionales.*;
 import com.rudyreyes.pascalcompiler.modelo.expresiones.logicas.*;
 import com.rudyreyes.pascalcompiler.modelo.expresiones.variables.*;
+import com.rudyreyes.pascalcompiler.modelo.expresiones.tipos.*;
 import com.rudyreyes.pascalcompiler.modelo.errores.*;
 
 // parser
@@ -50,7 +51,7 @@ action code
 //terminales
 terminal String CADENA, ENTERO, DECIMAL, ID;
 terminal FINCADENA, IMPRIMIR;
-terminal BEGIN, END, PUNTO, VAR, CONST, DOSPUNTOS, COMA;
+terminal BEGIN, END, PUNTO, VAR, CONST, DOSPUNTOS, COMA, TYPE;
 terminal INTEGER, REAL, VOID, BOOL, STRING, CHAR;
 terminal PAR1, PAR2, MAS, MENOS, UMENOS, MULT, DIV, DIVE, MOD;
 terminal DIFERENTE, MENOR, MENORIGUAL, MAYOR, MAYORIGUAL, IGUAL;
@@ -60,6 +61,7 @@ terminal String BOOLEAN, CARACTER;
 //no terminales
 nonterminal LinkedList<Instruccion> estructura, instrucciones,cuerpo ;
 nonterminal LinkedList<Instruccion> declaracion_variables, declaracion_constantes;
+nonterminal LinkedList<Instruccion> declaracion_tipos;
 nonterminal Tipo tipos_variable;
 nonterminal Instruccion instruccion;
 nonterminal Instruccion expresion, expresionAritmetica, expresionRelacional, expresionLogica;
@@ -81,7 +83,8 @@ cuerpo ::= cuerpo:a estructura:b {: RESULT = a; RESULT.addAll(b); :}
             | estructura: a {: RESULT = new LinkedList<>();  RESULT.addAll(a);:}
 ;
 
-estructura ::=   CONST declaracion_constantes:a {: RESULT = a; :}
+estructura ::=  TYPE declaracion_tipos:a {: RESULT = a; :}
+                |CONST declaracion_constantes:a {: RESULT = a; :}
                 | VAR declaracion_variables:a {: RESULT = a; :}
                 |BEGIN instrucciones:a  END PUNTO    {:   RESULT = a;   :}
 ;
@@ -94,6 +97,14 @@ instruccion ::= writeln:a                   {: RESULT= a; :}
                 | asignacion_variable:a        {: RESULT= a; :}
                 | error FINCADENA
                 | error 
+;
+
+declaracion_tipos ::= declaracion_tipos:a listado_id:b IGUAL tipos_variable:c FINCADENA 
+                                    {: RESULT =a ; RESULT.add(new DeclaracionTipos(b,c,aleft, aright)); :}
+                      |listado_id:a IGUAL tipos_variable:b FINCADENA 
+                                    {:RESULT = new LinkedList<Instruccion>(); 
+                                                    RESULT.add(new DeclaracionTipos(a, b,aleft, aright)); :}
+
 ;
 
 declaracion_constantes ::=   declaracion_constantes:a ID:b IGUAL expresion:c FINCADENA 
@@ -120,12 +131,12 @@ listado_id ::= listado_id:a COMA ID:e {: RESULT = a;
                                                     RESULT.add(a);:}
 ;
 
-tipos_variable ::= INTEGER       {:   RESULT=new Tipo(TipoDato.INTEGER);   :}
-                | REAL    {:   RESULT=new Tipo(TipoDato.REAL);   :}
-                | STRING    {:   RESULT=new Tipo(TipoDato.CADENA);   :}
-                | CHAR      {:   RESULT=new Tipo(TipoDato.CARACTER);   :}
-                | BOOL      {:   RESULT=new Tipo(TipoDato.BOOLEANO);   :}
-                | VOID      {:   RESULT=new Tipo(TipoDato.VOID);   :}
+tipos_variable ::= INTEGER       {:   RESULT=new Tipo("integer",TipoDato.INTEGER);   :}
+                | REAL    {:   RESULT=new Tipo("real",TipoDato.REAL);   :}
+                | STRING    {:   RESULT=new Tipo("string",TipoDato.CADENA);   :}
+                | CHAR      {:   RESULT=new Tipo("char",TipoDato.CARACTER);   :}
+                | BOOL      {:   RESULT=new Tipo("boolean",TipoDato.BOOLEANO);   :}
+                | VOID      {:   RESULT=new Tipo("void",TipoDato.VOID);   :}
 ;
 writeln ::= IMPRIMIR PAR1 expresion:a PAR2 FINCADENA      {:   RESULT = new Writeln(a, aleft, aright);   :}
 ;
@@ -138,11 +149,11 @@ writeln ::= IMPRIMIR PAR1 expresion:a PAR2 FINCADENA      {:   RESULT = new Writ
 expresion ::=  expresionAritmetica:a        {: RESULT = a; :}
             | expresionRelacional: a        {: RESULT = a; :}
             | expresionLogica:a             {: RESULT = a; :}
-            | ENTERO:a                      {:   RESULT = new Nativo(Integer.parseInt(a), new Tipo(TipoDato.INTEGER), aleft, aright );   :}
-            | DECIMAL:a                     {:   RESULT = new Nativo(new Double(a), new Tipo(TipoDato.REAL), aleft, aright );   :}
-            | CADENA:a                      {:   RESULT = new Nativo(a, new Tipo(TipoDato.CADENA), aleft, aright );   :}
-            | CARACTER:a                    {:   RESULT = new Nativo(a, new Tipo(TipoDato.CARACTER), aleft, aright );   :}
-            | BOOLEAN:a                     {:   RESULT = new Nativo(Boolean.parseBoolean(a), new Tipo(TipoDato.BOOLEANO), aleft, aright );   :}
+            | ENTERO:a                      {:   RESULT = new Nativo(Integer.parseInt(a), new Tipo("integer",TipoDato.INTEGER), aleft, aright );   :}
+            | DECIMAL:a                     {:   RESULT = new Nativo(new Double(a), new Tipo("real",TipoDato.REAL), aleft, aright );   :}
+            | CADENA:a                      {:   RESULT = new Nativo(a, new Tipo("string",TipoDato.CADENA), aleft, aright );   :}
+            | CARACTER:a                    {:   RESULT = new Nativo(a, new Tipo("char",TipoDato.CARACTER), aleft, aright );   :}
+            | BOOLEAN:a                     {:   RESULT = new Nativo(Boolean.parseBoolean(a), new Tipo("boolean",TipoDato.BOOLEANO), aleft, aright );   :}
             | ID:a                          {:   RESULT = new AccesoVariable(a, aleft, aright);   :}
 ;
 

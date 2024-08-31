@@ -10,6 +10,7 @@ import com.rudyreyes.pascalcompiler.modelo.abstracto.Instruccion;
 import com.rudyreyes.pascalcompiler.modelo.errores.Errores;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.Arbol;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.TablaSimbolos;
+import com.rudyreyes.pascalcompiler.modelo.simbolo.TablaTipos;
 import com.rudyreyes.pascalcompiler.vista.util.NumeroDeLinea;
 import java.awt.Component;
 import java.awt.Font;
@@ -73,13 +74,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         areaConsola = new javax.swing.JTextArea();
         jLabel3 = new javax.swing.JLabel();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        menuAbrir = new javax.swing.JMenu();
-        btnAbrirArchivo = new javax.swing.JMenuItem();
-        btnNuevoArchivo = new javax.swing.JMenuItem();
-        btnReportes = new javax.swing.JMenu();
-        jMenu1 = new javax.swing.JMenu();
-        btnEjecutar = new javax.swing.JMenuItem();
+        btnAbrirArchivo = new javax.swing.JButton();
+        btnNuevaPestania = new javax.swing.JButton();
+        btnEjecutar = new javax.swing.JButton();
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -105,6 +102,27 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Area de Consola:");
 
+        btnAbrirArchivo.setText("Abrir Archivo");
+        btnAbrirArchivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAbrirArchivoActionPerformed(evt);
+            }
+        });
+
+        btnNuevaPestania.setText("Nueva Pestania");
+        btnNuevaPestania.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevaPestaniaActionPerformed(evt);
+            }
+        });
+
+        btnEjecutar.setText("Ejecutar");
+        btnEjecutar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEjecutarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -113,12 +131,23 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
-                    .addComponent(areaCodigo))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnAbrirArchivo)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnNuevaPestania)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnEjecutar)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(areaCodigo)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -126,58 +155,21 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(14, 14, 14)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAbrirArchivo)
+                    .addComponent(btnNuevaPestania)
+                    .addComponent(btnEjecutar))
+                .addGap(15, 15, 15)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel3))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
                     .addComponent(areaCodigo))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
-
-        menuAbrir.setText("Abrir");
-        menuAbrir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuAbrirActionPerformed(evt);
-            }
-        });
-
-        btnAbrirArchivo.setText("Abrir Archivo");
-        btnAbrirArchivo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAbrirArchivoActionPerformed(evt);
-            }
-        });
-        menuAbrir.add(btnAbrirArchivo);
-
-        btnNuevoArchivo.setText("Nuevo Archivo");
-        btnNuevoArchivo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNuevoArchivoActionPerformed(evt);
-            }
-        });
-        menuAbrir.add(btnNuevoArchivo);
-
-        jMenuBar1.add(menuAbrir);
-
-        btnReportes.setText("Reportes");
-        jMenuBar1.add(btnReportes);
-
-        jMenu1.setText("Ejecutar");
-
-        btnEjecutar.setText("Analizar");
-        btnEjecutar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEjecutarActionPerformed(evt);
-            }
-        });
-        jMenu1.add(btnEjecutar);
-
-        jMenuBar1.add(jMenu1);
-
-        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -187,7 +179,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -248,12 +242,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         });
     }
     
-    private void menuAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuAbrirActionPerformed
+    private void btnAbrirArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirArchivoActionPerformed
         // TODO add your handling code here:
         
-    }//GEN-LAST:event_menuAbrirActionPerformed
-
-    private void btnAbrirArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirArchivoActionPerformed
         JFileChooser fc = new JFileChooser();
         FileNameExtensionFilter filtro = new FileNameExtensionFilter("Archivos de texto (*.txt, *.py, *.xml, *.csv, *.pas)", "txt", "py", "xml", "csv","pas");
         fc.setFileFilter(filtro);
@@ -285,9 +276,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnAbrirArchivoActionPerformed
 
-    private void btnNuevoArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoArchivoActionPerformed
+    private void btnNuevaPestaniaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaPestaniaActionPerformed
         // TODO add your handling code here:
-         String nombrePestania = JOptionPane.showInputDialog(this, "Ingrese el nombre de la nueva pestaña:");
+        
+        String nombrePestania = JOptionPane.showInputDialog(this, "Ingrese el nombre de la nueva pestaña:");
 
         if (nombrePestania != null && !nombrePestania.trim().isEmpty()) {
             JTextArea textArea = new JTextArea();
@@ -295,14 +287,18 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             NumeroDeLinea areaC = new NumeroDeLinea(textArea);
 
             JScrollPane scrollPane = new JScrollPane(textArea);
+            //scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            //scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
             scrollPane.setRowHeaderView(areaC);
             areaCodigo.addTab(nombrePestania, scrollPane);
         } else {
             JOptionPane.showMessageDialog(this, "El nombre de la pestaña no puede estar vacío.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_btnNuevoArchivoActionPerformed
+    }//GEN-LAST:event_btnNuevaPestaniaActionPerformed
 
     private void btnEjecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEjecutarActionPerformed
+        // TODO add your handling code here:
+        
         String contenido="";
         int selectedIndex = areaCodigo.getSelectedIndex();
         if (selectedIndex != -1) {
@@ -319,10 +315,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 if (resultado != null) {
                     var ast = new Arbol((LinkedList<Instruccion>) resultado.value);
                     var tabla = new TablaSimbolos();
+                    var tablaTipos = new TablaTipos();
+                    tablaTipos.setNombre("GLOBAL");
                     tabla.setNombre("GLOBAL");
                     ast.setConsola("");
                     ast.setTablaGlobal(tabla);
-                    
+                    ast.setTablaTipos(tablaTipos);
                     LinkedList<Object> lista = new LinkedList<>();
                     
                     lista.addAll(s.listaErrores);
@@ -346,6 +344,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                     for (var i : lista) {
                         areaConsola.append(i.toString()+"\n");
                     }
+                    
+                    areaConsola.append(tablaTipos.mostrarSimbolosTablaActual());
                 }
                 } catch (Exception ex) {
                 //areaConsola.setText("Algo salio mal: "+ex);
@@ -401,18 +401,14 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTabbedPane areaCodigo;
     private javax.swing.JTextArea areaConsola;
-    private javax.swing.JMenuItem btnAbrirArchivo;
-    private javax.swing.JMenuItem btnEjecutar;
-    private javax.swing.JMenuItem btnNuevoArchivo;
-    private javax.swing.JMenu btnReportes;
+    private javax.swing.JButton btnAbrirArchivo;
+    private javax.swing.JButton btnEjecutar;
+    private javax.swing.JButton btnNuevaPestania;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JMenu menuAbrir;
     // End of variables declaration//GEN-END:variables
 }

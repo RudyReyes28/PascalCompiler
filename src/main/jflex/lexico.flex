@@ -85,6 +85,7 @@ BEGIN = "begin"
 END = "end"
 VAR = "var"
 CONST = "const"
+TYPE = "type"
 
 INTEGER = "integer"
 CHAR = "char"
@@ -99,6 +100,7 @@ BOOL = "boolean"
 <YYINITIAL> {END}           {return new Symbol(sym.END, yyline, yycolumn,yytext());}
 <YYINITIAL> {VAR}           {return new Symbol(sym.VAR, yyline, yycolumn,yytext());}
 <YYINITIAL> {CONST}           {return new Symbol(sym.CONST, yyline, yycolumn,yytext());}
+<YYINITIAL> {TYPE}           {return new Symbol(sym.TYPE, yyline, yycolumn,yytext());}
 
 <YYINITIAL> {INTEGER}       {return new Symbol(sym.INTEGER, yyline, yycolumn,yytext());}
 <YYINITIAL> {CHAR}      {return new Symbol(sym.CHAR, yyline, yycolumn,yytext());}
