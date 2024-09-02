@@ -84,12 +84,12 @@ public class TablaTipos {
     }
 
     private void cargarTiposPropios() {
-        Tipo tipoInteger = new Tipo("integer", TipoDato.INTEGER);
-        Tipo tipoReal = new Tipo("real", TipoDato.REAL);
-        Tipo tipoChar = new Tipo("char", TipoDato.CARACTER);
-        Tipo tipoString = new Tipo("string", TipoDato.CADENA);
-        Tipo tipoBoolean = new Tipo("boolean", TipoDato.BOOLEANO);
-        Tipo tipoVoid = new Tipo("void", TipoDato.VOID);
+        Tipo tipoInteger = new Tipo("integer", TipoDato.INTEGER, "integer");
+        Tipo tipoReal = new Tipo("real", TipoDato.REAL, "real");
+        Tipo tipoChar = new Tipo("char", TipoDato.CARACTER, "char");
+        Tipo tipoString = new Tipo("string", TipoDato.CADENA, "string");
+        Tipo tipoBoolean = new Tipo("boolean", TipoDato.BOOLEANO, "boolean");
+        Tipo tipoVoid = new Tipo("void", TipoDato.VOID, "void");
         
          this.tablaActual.put(tipoInteger.getNombre().toLowerCase(),tipoInteger);
          this.tablaActual.put(tipoReal.getNombre().toLowerCase(),tipoReal);

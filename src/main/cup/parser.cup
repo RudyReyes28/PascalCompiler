@@ -66,7 +66,8 @@ terminal BREAK, CONTINUE;
 //no terminales
 nonterminal LinkedList<Instruccion> estructura, instrucciones,cuerpo ;
 nonterminal LinkedList<Instruccion> declaracion_variables, declaracion_constantes;
-nonterminal LinkedList<Instruccion> declaracion_tipos;
+nonterminal LinkedList<Instruccion> declaraciones_tipos;
+nonterminal Instruccion declaracion_tipo;
 nonterminal Tipo tipos_variable;
 nonterminal Instruccion instruccion, instruccion_fin;
 nonterminal Instruccion expresion, expresionAritmetica, expresionRelacional, expresionLogica;
@@ -95,7 +96,7 @@ cuerpo ::= cuerpo:a estructura:b {: RESULT = a; RESULT.addAll(b); :}
             | estructura: a {: RESULT = new LinkedList<>();  RESULT.addAll(a);:}
 ;
 
-estructura ::=  TYPE declaracion_tipos:a {: RESULT = a; :}
+estructura ::=  TYPE declaraciones_tipos:a {: RESULT = a; :}
                 |CONST declaracion_constantes:a {: RESULT = a; :}
                 | VAR declaracion_variables:a {: RESULT = a; :}
                 |BEGIN instrucciones:a  END PUNTO    {:   RESULT = a;   :}
@@ -125,13 +126,18 @@ instruccion ::= writeln:a       FINCADENA            {: RESULT= a; :}
 //                | sentencia_ifelse:a            {: RESULT= a; :}
 //;
 
-declaracion_tipos ::= declaracion_tipos:a listado_id:b IGUAL tipos_variable:c FINCADENA 
-                                    {: RESULT =a ; RESULT.add(new DeclaracionTipos(b,c,aleft, aright)); :}
-                      |listado_id:a IGUAL tipos_variable:b FINCADENA 
-                                    {:RESULT = new LinkedList<Instruccion>(); 
-                                                    RESULT.add(new DeclaracionTipos(a, b,aleft, aright)); :}
-                        | error FINCADENA
-                        | error 
+declaraciones_tipos ::=declaraciones_tipos:a declaracion_tipo:b {: RESULT = a; RESULT.add(b); :}
+                    | declaracion_tipo:a {: RESULT = new LinkedList<>(); RESULT.add(a); :}
+
+;
+
+declaracion_tipo ::=   listado_id:a IGUAL tipos_variable:b FINCADENA 
+                                    {: RESULT = new DeclaracionTipos(a, b,aleft, aright);  :}
+                      
+                      |listado_id:a IGUAL expresion:b PUNTO PUNTO PUNTO expresion:c FINCADENA 
+                                    {: RESULT = new DeclaracionTipoSubRango(a, b,c, aleft, aright);  :}
+                      | error FINCADENA
+                      | error 
 ;
 
 declaracion_constantes ::=   declaracion_constantes:a ID:b IGUAL expresion:c FINCADENA 

@@ -16,6 +16,7 @@ public class Tipo {
     private int minimo;
     private int maximo;
     private String ambito;
+    private String nombreEstructura;
 
     public Tipo(TipoDato tipo) {
         this.tipo = tipo;
@@ -34,6 +35,12 @@ public class Tipo {
     public Tipo(String nombre, TipoDato tipo) {
         this.nombre = nombre;
         this.tipo = tipo;
+    }
+
+    public Tipo(String nombre, TipoDato tipo, String nombreEstructura) {
+        this.nombre = nombre;
+        this.tipo = tipo;
+        this.nombreEstructura = nombreEstructura;
     }
     
     
@@ -94,8 +101,18 @@ public class Tipo {
         this.ambito = ambito;
     }
 
+    public String getNombreEstructura() {
+        return nombreEstructura;
+    }
+
+    public void setNombreEstructura(String nombreEstructura) {
+        this.nombreEstructura = nombreEstructura;
+    }
+
+    
+    
     public String imprimirTipo() {
-        return "Tipo{" + "nombre=" + nombre + ", tipo=" + tipo + ", padre=" + padre + ", dimension=" + dimension + ", minimo=" + minimo + ", maximo=" + maximo + ", ambito=" + ambito + '}';
+        return "Tipo{" + "nombre=" + nombre + ", tipo=" + tipo + ", padre=" + padre + ", dimension=" + dimension + ", minimo=" + minimo + ", maximo=" + maximo + ", ambito=" + ambito + ", nombreEstructura="+nombreEstructura+'}';
     }
     
     

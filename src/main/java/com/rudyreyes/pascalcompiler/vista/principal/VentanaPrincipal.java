@@ -345,7 +345,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                         areaConsola.append(i.toString()+"\n");
                     }
                     
-                    //areaConsola.append(tablaTipos.mostrarSimbolosTablaActual());
+                    areaConsola.append(tablaTipos.mostrarSimbolosTablaActual());
                 }
                 } catch (Exception ex) {
                 //areaConsola.setText("Algo salio mal: "+ex);

@@ -17,7 +17,7 @@ import java.util.LinkedList;
  */
 public class DeclaracionTipos extends Instruccion{
     
-    public LinkedList<String> identificadores;
+    private LinkedList<String> identificadores;
 
     public DeclaracionTipos(LinkedList<String> identificadores, Tipo tipo, int linea, int columna) {
         super(tipo, linea, columna);
