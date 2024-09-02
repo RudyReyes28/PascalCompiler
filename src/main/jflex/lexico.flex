@@ -86,6 +86,15 @@ END = "end"
 VAR = "var"
 CONST = "const"
 TYPE = "type"
+IF = "if"
+CASE = "case"
+OF = "of"
+WHILE = "while"
+DO = "do"
+FOR = "for"
+TO = "to"
+REPEAT = "repeat"
+UNTIL = "until"
 
 INTEGER = "integer"
 CHAR = "char"
@@ -101,6 +110,15 @@ BOOL = "boolean"
 <YYINITIAL> {VAR}           {return new Symbol(sym.VAR, yyline, yycolumn,yytext());}
 <YYINITIAL> {CONST}           {return new Symbol(sym.CONST, yyline, yycolumn,yytext());}
 <YYINITIAL> {TYPE}           {return new Symbol(sym.TYPE, yyline, yycolumn,yytext());}
+<YYINITIAL> {IF}           {return new Symbol(sym.IF, yyline, yycolumn,yytext());}
+<YYINITIAL> {CASE}           {return new Symbol(sym.CASE, yyline, yycolumn,yytext());}
+<YYINITIAL> {OF}           {return new Symbol(sym.OF, yyline, yycolumn,yytext());}
+<YYINITIAL> {WHILE}           {return new Symbol(sym.WHILE, yyline, yycolumn,yytext());}
+<YYINITIAL> {DO}           {return new Symbol(sym.DO, yyline, yycolumn,yytext());}
+<YYINITIAL> {FOR}           {return new Symbol(sym.FOR, yyline, yycolumn,yytext());}
+<YYINITIAL> {TO}           {return new Symbol(sym.TO, yyline, yycolumn,yytext());}
+<YYINITIAL> {REPEAT}           {return new Symbol(sym.REPEAT, yyline, yycolumn,yytext());}
+<YYINITIAL> {UNTIL}           {return new Symbol(sym.UNTIL, yyline, yycolumn,yytext());}
 
 <YYINITIAL> {INTEGER}       {return new Symbol(sym.INTEGER, yyline, yycolumn,yytext());}
 <YYINITIAL> {CHAR}      {return new Symbol(sym.CHAR, yyline, yycolumn,yytext());}

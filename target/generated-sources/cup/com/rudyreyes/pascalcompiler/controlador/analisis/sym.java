@@ -16,8 +16,11 @@ public interface sym {
   public static final int CHAR = 21;
   public static final int IMPRIMIR = 7;
   public static final int ENTERO = 3;
+  public static final int CASE = 47;
   public static final int DIFERENTE = 31;
   public static final int INTEGER = 16;
+  public static final int REPEAT = 53;
+  public static final int FOR = 51;
   public static final int AND = 38;
   public static final int NOT = 37;
   public static final int FINCADENA = 6;
@@ -30,8 +33,11 @@ public interface sym {
   public static final int BOOL = 19;
   public static final int DIV = 28;
   public static final int BEGIN = 8;
+  public static final int UNTIL = 54;
+  public static final int IF = 46;
   public static final int UMENOS = 26;
   public static final int ID = 5;
+  public static final int OF = 48;
   public static final int MAYORIGUAL = 35;
   public static final int BOOLEAN = 44;
   public static final int EOF = 0;
@@ -49,10 +55,13 @@ public interface sym {
   public static final int DIVE = 29;
   public static final int ELSE = 40;
   public static final int PUNTO = 10;
+  public static final int TO = 52;
+  public static final int WHILE = 49;
   public static final int THEN = 39;
   public static final int END = 9;
   public static final int STRING = 20;
   public static final int VAR = 11;
+  public static final int DO = 50;
   public static final int MAS = 24;
   public static final String[] terminalNames = new String[] {
   "EOF",
@@ -100,7 +109,16 @@ public interface sym {
   "ANDT",
   "ORE",
   "BOOLEAN",
-  "CARACTER"
+  "CARACTER",
+  "IF",
+  "CASE",
+  "OF",
+  "WHILE",
+  "DO",
+  "FOR",
+  "TO",
+  "REPEAT",
+  "UNTIL"
   };
 }
 
