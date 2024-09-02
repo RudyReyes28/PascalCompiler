@@ -19,6 +19,7 @@ public interface sym {
   public static final int CASE = 47;
   public static final int DIFERENTE = 31;
   public static final int INTEGER = 16;
+  public static final int CONTINUE = 56;
   public static final int REPEAT = 53;
   public static final int FOR = 51;
   public static final int AND = 38;
@@ -49,6 +50,7 @@ public interface sym {
   public static final int ANDT = 42;
   public static final int MENOR = 32;
   public static final int MOD = 30;
+  public static final int BREAK = 55;
   public static final int VOID = 18;
   public static final int REAL = 17;
   public static final int MAYOR = 34;
@@ -118,7 +120,9 @@ public interface sym {
   "FOR",
   "TO",
   "REPEAT",
-  "UNTIL"
+  "UNTIL",
+  "BREAK",
+  "CONTINUE"
   };
 }
 

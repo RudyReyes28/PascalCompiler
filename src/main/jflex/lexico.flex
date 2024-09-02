@@ -95,6 +95,8 @@ FOR = "for"
 TO = "to"
 REPEAT = "repeat"
 UNTIL = "until"
+BREAK = "break"
+CONTINUE = "continue"
 
 INTEGER = "integer"
 CHAR = "char"
@@ -119,6 +121,8 @@ BOOL = "boolean"
 <YYINITIAL> {TO}           {return new Symbol(sym.TO, yyline, yycolumn,yytext());}
 <YYINITIAL> {REPEAT}           {return new Symbol(sym.REPEAT, yyline, yycolumn,yytext());}
 <YYINITIAL> {UNTIL}           {return new Symbol(sym.UNTIL, yyline, yycolumn,yytext());}
+<YYINITIAL> {BREAK}           {return new Symbol(sym.BREAK, yyline, yycolumn,yytext());}
+<YYINITIAL> {CONTINUE}           {return new Symbol(sym.CONTINUE, yyline, yycolumn,yytext());}
 
 <YYINITIAL> {INTEGER}       {return new Symbol(sym.INTEGER, yyline, yycolumn,yytext());}
 <YYINITIAL> {CHAR}      {return new Symbol(sym.CHAR, yyline, yycolumn,yytext());}

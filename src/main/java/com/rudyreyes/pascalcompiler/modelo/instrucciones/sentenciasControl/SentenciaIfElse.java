@@ -6,6 +6,8 @@ package com.rudyreyes.pascalcompiler.modelo.instrucciones.sentenciasControl;
 
 import com.rudyreyes.pascalcompiler.modelo.abstracto.Instruccion;
 import com.rudyreyes.pascalcompiler.modelo.errores.Errores;
+import com.rudyreyes.pascalcompiler.modelo.instrucciones.sentenciaTransferencia.SentenciaBreak;
+import com.rudyreyes.pascalcompiler.modelo.instrucciones.sentenciaTransferencia.SentenciaContinue;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.Arbol;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.TablaSimbolos;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.Tipo;
@@ -47,14 +49,14 @@ public class SentenciaIfElse extends Instruccion {
         arbol.agregarTablaEntorno(newTabla);
         if ((boolean) cond) {
             for (var i : this.instrucciones) {
-                /*if (i instanceof SentenciaBreak) {
+                if (i instanceof SentenciaBreak) {
                     return i;
                 }
                 
                 if (i instanceof SentenciaContinue) {
                     return i;
                 }
-                if (i instanceof FuncionReturn) {
+                /*if (i instanceof FuncionReturn) {
                     var res = i.interpretar(arbol, newTabla);
                     if (res instanceof Errores) {
                         return res;

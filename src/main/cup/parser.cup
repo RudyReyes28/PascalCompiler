@@ -13,7 +13,7 @@ import com.rudyreyes.pascalcompiler.modelo.instrucciones.variables.*;
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.sentenciasControl.*;
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.tipos.*;
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.ciclos.*;
-
+import com.rudyreyes.pascalcompiler.modelo.instrucciones.sentenciaTransferencia.*;
 //expresiones
 import com.rudyreyes.pascalcompiler.modelo.expresiones.nativo.*;
 import com.rudyreyes.pascalcompiler.modelo.expresiones.aritmeticas.*;
@@ -61,6 +61,7 @@ terminal DIFERENTE, MENOR, MENORIGUAL, MAYOR, MAYORIGUAL, IGUAL;
 terminal NOT, AND, THEN, ELSE, OR, ANDT, ORE;
 terminal String BOOLEAN, CARACTER;
 terminal IF,CASE, OF, WHILE, DO, FOR, TO, REPEAT, UNTIL;
+terminal BREAK, CONTINUE;
 
 //no terminales
 nonterminal LinkedList<Instruccion> estructura, instrucciones,cuerpo ;
@@ -72,7 +73,7 @@ nonterminal Instruccion expresion, expresionAritmetica, expresionRelacional, exp
 nonterminal LinkedList<String> listado_id;
 nonterminal Instruccion writeln, asignacion_variable, sentencia_if, sentencia_ifelse, opcion_else;
 nonterminal Instruccion sentencia_case, sentencia_while, sentencia_for, sentencia_repeat;
-
+nonterminal Instruccion transferencia_break, transferencia_continue;
 
 
 nonterminal CasoCase caso_case;
@@ -112,6 +113,8 @@ instruccion ::= writeln:a       FINCADENA            {: RESULT= a; :}
                 | sentencia_while:a                 {: RESULT =a; :}
                 | sentencia_for:a                 {: RESULT =a; :}
                 | sentencia_repeat:a                 {: RESULT =a; :}
+                | transferencia_break:a        {: RESULT= a; :}
+                | transferencia_continue:a     {: RESULT= a; :}
                 | error FINCADENA
                 | error 
 ;
@@ -245,6 +248,12 @@ sentencia_for ::= FOR ID:a DOSPUNTOS IGUAL expresion:b TO expresion:c DO instruc
 
 sentencia_repeat ::= REPEAT  instrucciones:b  UNTIL expresion:a  FINCADENA {:   RESULT = new SentenciaRepeat(a, b, aleft, aright);   :}
 
+;
+
+transferencia_break::=  BREAK:a FINCADENA      {:    RESULT = new SentenciaBreak(aleft, aright);     :}
+;
+
+transferencia_continue::=  CONTINUE:a FINCADENA      {:    RESULT = new SentenciaContinue(aleft, aright);     :}
 ;
 
 //AGREGAR UNA EXPRESION COMA
