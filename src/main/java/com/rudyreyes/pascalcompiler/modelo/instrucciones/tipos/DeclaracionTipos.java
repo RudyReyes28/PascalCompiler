@@ -30,6 +30,7 @@ public class DeclaracionTipos extends Instruccion{
         
         for (String identificador : identificadores) {
             Tipo t = new Tipo( identificador, this.tipo.getTipo());
+            t.setNombreEstructura("nuevotipo");
 
             boolean creacion = arbol.getTablaTipos().setTipo(t);
             if (!creacion) {

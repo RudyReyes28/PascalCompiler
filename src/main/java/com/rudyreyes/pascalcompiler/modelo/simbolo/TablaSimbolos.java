@@ -93,11 +93,13 @@ public class TablaSimbolos {
         return simbolos;
     }
 
-    public void mostrarTodosLosSimbolos() {
+    public String mostrarTodosLosSimbolos() {
+        String detalleS = "";
         List<Simbolo> simbolos = getTodosLosSimbolos();
         for (Simbolo simbolo : simbolos) {
-            System.out.println(simbolo.imprimirSimbolo());
+           detalleS +=simbolo.imprimirSimbolo() +"\n";
         }
+        return detalleS;
     }
     
     public List<Simbolo> getSimbolosTablaActual() {

@@ -2,11 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.rudyreyes.pascalcompiler.modelo.instrucciones.tipos;
+package com.rudyreyes.pascalcompiler.modelo.instrucciones.variables;
 
 import com.rudyreyes.pascalcompiler.modelo.abstracto.Instruccion;
 import com.rudyreyes.pascalcompiler.modelo.errores.Errores;
+import com.rudyreyes.pascalcompiler.modelo.expresiones.nativo.Nativo;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.Arbol;
+import com.rudyreyes.pascalcompiler.modelo.simbolo.Simbolo;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.TablaSimbolos;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.Tipo;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.TipoDato;
@@ -16,12 +18,12 @@ import java.util.LinkedList;
  *
  * @author rudyo
  */
-public class DeclaracionTipoSubRango extends Instruccion {
+public class DeclaracionVarSubrango extends Instruccion{
     private LinkedList<String> idRango;
     private Instruccion rangoInicial;
     private Instruccion rangoFinal;
 
-    public DeclaracionTipoSubRango(LinkedList<String> idRango, Instruccion rangoInicial, Instruccion rangoFinal, int linea, int columna) {
+    public DeclaracionVarSubrango(LinkedList<String> idRango, Instruccion rangoInicial, Instruccion rangoFinal, int linea, int columna) {
         super(new Tipo(TipoDato.INTEGER), linea, columna);
         this.idRango = idRango;
         this.rangoInicial = rangoInicial;
@@ -56,10 +58,12 @@ public class DeclaracionTipoSubRango extends Instruccion {
                 t.setMaximo((int) rangoF);
                 t.setDimension((int) rangoF - (int) rangoI+1);
                 t.setNombreEstructura("subrange");
+                
+                Simbolo s = new Simbolo(true, t, identificador, valorInterpretado(rangoInicial.tipo.getTipo()).interpretar(arbol, tabla), this.linea, this.columna);
 
-                boolean creacion = arbol.getTablaTipos().setTipo(t);
+                boolean creacion = tabla.setVariable(s);
                 if (!creacion) {
-                    return new Errores("SEMANTICO", "El tipo \"" + identificador + "\" ya existe", this.linea, this.columna);
+                    return new Errores("SEMANTICO", "La variable \"" + identificador + "\" ya existe", this.linea, this.columna);
                 }
             }
 
@@ -73,5 +77,25 @@ public class DeclaracionTipoSubRango extends Instruccion {
     }
     
     
+    private Nativo valorInterpretado(TipoDato tipo){
+        switch (tipo){
+                case INTEGER:
+                    return  new Nativo(0, new Tipo(TipoDato.INTEGER), linea, columna-1 );
+                    
+                case REAL:
+                    return  new Nativo(0.0, new Tipo(TipoDato.REAL), linea, columna-1 );
+                    
+                case CADENA:
+                    return  new Nativo("", new Tipo(TipoDato.CADENA), linea, columna-1 );
+                    
+                case CARACTER:
+                    return  new Nativo('0', new Tipo(TipoDato.CARACTER), linea, columna-1 );
+                    
+                case BOOLEANO:
+                   return  new Nativo(false, new Tipo(TipoDato.BOOLEANO), linea, columna-1 );
+                    
+                   default: return null;
+        }
+    }
     
 }

@@ -22,13 +22,59 @@ public class DeclaracionVariable extends Instruccion{
     public boolean mutabilidad;
     public LinkedList<String> identificadores;
     public Instruccion valor;
+    public String tipoDato;
 
-    public DeclaracionVariable(boolean mutabilidad, LinkedList<String> identificadores, Instruccion valor, Tipo tipo, int linea, int columna) {
-        super(tipo, linea, columna);
+    public DeclaracionVariable(boolean mutabilidad, LinkedList<String> identificadores, Instruccion valor, String tipoDato, int linea, int columna) {
+        super(new Tipo(TipoDato.INTEGER), linea, columna);
         this.mutabilidad = mutabilidad;
         this.identificadores = identificadores;
+        this.tipoDato = tipoDato;
         
         
+        
+    }
+
+    
+
+    @Override
+    public Object interpretar(Arbol arbol, TablaSimbolos tabla) {
+        Tipo tipoDatoVar = arbol.getTablaTipos().getTipo(this.tipoDato);
+        
+        if(tipoDatoVar== null){
+             return new Errores("SEMANTICO", "El tipo de dato no existe", this.linea, this.columna);
+
+        }
+        this.tipo = tipoDatoVar;
+        verificarTipo();
+        
+        var valorInterpretado = this.valor.interpretar(arbol, tabla);
+
+        //validamos si es error
+        if (valorInterpretado instanceof Errores) {
+            return valorInterpretado;
+        }
+
+        //validamos los tipo
+        if (this.valor.tipo.getTipo() != this.tipo.getTipo()) {
+            return new Errores("SEMANTICO", "Tipo de dato erroneo, no se puede asignar el valor de tipo "+this.valor.tipo.getTipo()+ " a la variable de tipo "+ this.tipo.getTipo(), this.linea, this.columna);
+        }
+       
+        for (String identificador : identificadores) {
+            //aqui deberia de definir mas tarde el valor a guardar, ya que puede ser arreglo por ahora o book
+            Simbolo s = new Simbolo(mutabilidad, this.tipo, identificador, valorInterpretado, this.linea, this.columna);
+
+            boolean creacion = tabla.setVariable(s);
+            if (!creacion) {
+                return new Errores("SEMANTICO", "La variable \"" + identificador + "\" ya existe", this.linea, this.columna);
+            }
+        }
+
+        
+
+        return null;
+    }
+    
+    private void verificarTipo(){
         if(valor ==null){
             switch (tipo.getTipo()){
                 case INTEGER:
@@ -51,36 +97,4 @@ public class DeclaracionVariable extends Instruccion{
         
         this.valor = valor;
     }
-
-    
-
-    @Override
-    public Object interpretar(Arbol arbol, TablaSimbolos tabla) {
-        var valorInterpretado = this.valor.interpretar(arbol, tabla);
-
-        //validamos si es error
-        if (valorInterpretado instanceof Errores) {
-            return valorInterpretado;
-        }
-
-        //validamos los tipo
-        if (this.valor.tipo.getTipo() != this.tipo.getTipo()) {
-            return new Errores("SEMANTICO", "Tipo de dato erroneo, no se puede asignar el valor de tipo "+this.valor.tipo.getTipo()+ " a la variable de tipo "+ this.tipo.getTipo(), this.linea, this.columna);
-        }
-       
-        for (String identificador : identificadores) {
-            Simbolo s = new Simbolo(mutabilidad, this.tipo, identificador, valorInterpretado, this.linea, this.columna);
-
-            boolean creacion = tabla.setVariable(s);
-            if (!creacion) {
-                return new Errores("SEMANTICO", "La variable \"" + identificador + "\" ya existe", this.linea, this.columna);
-            }
-        }
-
-        
-
-        return null;
-    }
-    
-    
 }

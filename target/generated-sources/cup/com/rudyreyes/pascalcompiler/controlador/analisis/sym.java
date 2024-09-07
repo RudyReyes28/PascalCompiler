@@ -21,6 +21,7 @@ public interface sym {
   public static final int INTEGER = 16;
   public static final int CONTINUE = 56;
   public static final int REPEAT = 53;
+  public static final int ARRAY = 57;
   public static final int FOR = 51;
   public static final int AND = 38;
   public static final int NOT = 37;
@@ -29,7 +30,9 @@ public interface sym {
   public static final int IGUAL = 36;
   public static final int CARACTER = 45;
   public static final int TYPE = 15;
+  public static final int CORCHETE2 = 59;
   public static final int OR = 41;
+  public static final int CORCHETE1 = 58;
   public static final int ORE = 43;
   public static final int BOOL = 19;
   public static final int DIV = 28;
@@ -122,7 +125,10 @@ public interface sym {
   "REPEAT",
   "UNTIL",
   "BREAK",
-  "CONTINUE"
+  "CONTINUE",
+  "ARRAY",
+  "CORCHETE1",
+  "CORCHETE2"
   };
 }
 

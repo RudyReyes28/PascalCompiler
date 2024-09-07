@@ -61,16 +61,18 @@ terminal DIFERENTE, MENOR, MENORIGUAL, MAYOR, MAYORIGUAL, IGUAL;
 terminal NOT, AND, THEN, ELSE, OR, ANDT, ORE;
 terminal String BOOLEAN, CARACTER;
 terminal IF,CASE, OF, WHILE, DO, FOR, TO, REPEAT, UNTIL;
-terminal BREAK, CONTINUE;
+terminal BREAK, CONTINUE, ARRAY, CORCHETE1, CORCHETE2;
 
 //no terminales
 nonterminal LinkedList<Instruccion> estructura, instrucciones,cuerpo ;
-nonterminal LinkedList<Instruccion> declaracion_variables, declaracion_constantes;
-nonterminal LinkedList<Instruccion> declaraciones_tipos;
-nonterminal Instruccion declaracion_tipo;
+nonterminal LinkedList<Instruccion> declaracion_constantes;
+nonterminal LinkedList<Instruccion> declaraciones_tipos, declaraciones_variables;
+nonterminal Instruccion declaracion_tipo, declaracion_variables;
 nonterminal Tipo tipos_variable;
+nonterminal String tipos_dato_var;
 nonterminal Instruccion instruccion, instruccion_fin;
 nonterminal Instruccion expresion, expresionAritmetica, expresionRelacional, expresionLogica;
+nonterminal LinkedList<Instruccion> expresion_conca;
 nonterminal LinkedList<String> listado_id;
 nonterminal Instruccion writeln, asignacion_variable, sentencia_if, sentencia_ifelse, opcion_else;
 nonterminal Instruccion sentencia_case, sentencia_while, sentencia_for, sentencia_repeat;
@@ -98,7 +100,7 @@ cuerpo ::= cuerpo:a estructura:b {: RESULT = a; RESULT.addAll(b); :}
 
 estructura ::=  TYPE declaraciones_tipos:a {: RESULT = a; :}
                 |CONST declaracion_constantes:a {: RESULT = a; :}
-                | VAR declaracion_variables:a {: RESULT = a; :}
+                | VAR declaraciones_variables:a {: RESULT = a; :}
                 |BEGIN instrucciones:a  END PUNTO    {:   RESULT = a;   :}
 ;
 
@@ -136,6 +138,8 @@ declaracion_tipo ::=   listado_id:a IGUAL tipos_variable:b FINCADENA
                       
                       |listado_id:a IGUAL expresion:b PUNTO PUNTO PUNTO expresion:c FINCADENA 
                                     {: RESULT = new DeclaracionTipoSubRango(a, b,c, aleft, aright);  :}
+                      | listado_id:a IGUAL ARRAY CORCHETE1 expresion:b PUNTO PUNTO expresion:c CORCHETE2 OF tipos_variable:d FINCADENA
+                                    {: RESULT = new DeclaracionTipoArreglo(a,b,c, d, aleft, aright); :}
                       | error FINCADENA
                       | error 
 ;
@@ -151,13 +155,15 @@ declaracion_constantes ::=   declaracion_constantes:a ID:b IGUAL expresion:c FIN
                         | error 
 ;
 
-
-declaracion_variables ::= declaracion_variables:a listado_id:b DOSPUNTOS tipos_variable:c FINCADENA 
-                                    {: RESULT =a ; RESULT.add(new DeclaracionVariable(true, b,null, c,aleft, aright)); :}
-                            |listado_id:a DOSPUNTOS tipos_variable:b FINCADENA 
-                                    {:RESULT = new LinkedList<Instruccion>(); 
-                                                    RESULT.add(new DeclaracionVariable(true, a,null, b,aleft, aright)); :}
-
+declaraciones_variables ::= declaraciones_variables:a declaracion_variables:b {: RESULT = a; RESULT.add(b); :}
+                        | declaracion_variables:a  {: RESULT = new LinkedList<>(); RESULT.add(a); :}
+;
+declaracion_variables ::= listado_id:a DOSPUNTOS tipos_dato_var:b FINCADENA 
+                                    {:RESULT = new DeclaracionVariable(true, a,null, b,aleft, aright); :}
+                        |listado_id:a DOSPUNTOS expresion:b PUNTO PUNTO PUNTO expresion:c FINCADENA 
+                                    {: RESULT = new DeclaracionVarSubrango(a, b,c, aleft, aright);  :}
+                        |listado_id:a DOSPUNTOS ARRAY CORCHETE1 expresion:b PUNTO PUNTO expresion:c CORCHETE2 OF tipos_dato_var:d FINCADENA
+                                    {: RESULT = new DeclaracionVarArreglo(a,b,c, d, aleft, aright); :}
                         | error FINCADENA
                         | error 
 ;
@@ -176,12 +182,25 @@ tipos_variable ::= INTEGER       {:   RESULT=new Tipo("integer",TipoDato.INTEGER
                 | VOID      {:   RESULT=new Tipo("void",TipoDato.VOID);   :}
 ;
 
+tipos_dato_var ::= INTEGER       {:   RESULT="integer";   :}
+                | REAL    {:   RESULT="real";   :}
+                | STRING    {:   RESULT="string";   :}
+                | CHAR      {:   RESULT="char";   :}
+                | BOOL      {:   RESULT="boolean";   :}
+                | VOID      {:   RESULT="void";   :}
+                | ID:a      {: RESULT = a ;:}
+;
+
 
 //INSTRUCCIONES BEGIN END .
 
-writeln ::= IMPRIMIR PAR1 expresion:a PAR2       {:   RESULT = new Writeln(a, aleft, aright);   :}
+writeln ::= IMPRIMIR PAR1 expresion_conca:a PAR2       {:    RESULT = new Writeln(a, aleft, aright);   :}
 ;
-
+expresion_conca ::= expresion_conca:a COMA expresion:b           {: RESULT = a;
+                                                    RESULT.add(b);:}
+                | expresion:a  {:RESULT = new LinkedList<>(); 
+                                                    RESULT.add(a);:}
+;
 
  asignacion_variable ::= ID:a DOSPUNTOS IGUAL expresion:b   {:   RESULT=new AsignacionVariable(a, b, aleft, aright);  :}
 ;
@@ -283,6 +302,8 @@ expresionAritmetica ::= MENOS expresion:a             {:   RESULT = new Operacio
             | expresion:a MOD expresion:b           {:  RESULT = new OperacionModulo (a, b, aleft, aright);   :}
             | PAR1 expresion:a PAR2                 {:   RESULT = a;   :}
 ;
+
+
 
 expresionRelacional ::= expresion:a IGUAL expresion:b   {:   RESULT = new Igualacion(a, b, aleft, aright);   :} %prec IGUAL
                     | expresion:a DIFERENTE expresion:b     {:   RESULT = new Diferenciacion(a, b, aleft, aright);   :} %prec DIFERENTE

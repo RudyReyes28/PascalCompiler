@@ -84,6 +84,6 @@ public class Simbolo {
     
     
     public String imprimirSimbolo(){
-        return ("Tipo"+this.tipo.getTipo()+" ID: " +id+" valor: "+ valor+ " Linea "+linea+" columna "+columna);
+        return ("Tipo"+this.tipo.imprimirTipo()+"      "+" ID: " +id+" valor: "+ valor+ " Linea "+linea+" columna "+columna);
     }
 }

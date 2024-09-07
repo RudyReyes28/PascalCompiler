@@ -10,6 +10,7 @@ import com.rudyreyes.pascalcompiler.modelo.simbolo.Arbol;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.TablaSimbolos;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.Tipo;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.TipoDato;
+import java.util.LinkedList;
 
 /**
  *
@@ -17,23 +18,30 @@ import com.rudyreyes.pascalcompiler.modelo.simbolo.TipoDato;
  */
 public class Writeln extends Instruccion {
     
-    private Instruccion expresion;
+    private LinkedList<Instruccion> instrucciones;
 
-    public Writeln(Instruccion expresion, int linea, int columna) {
+    public Writeln(LinkedList<Instruccion> instrucciones, int linea, int columna) {
         super(new Tipo(TipoDato.VOID), linea, columna);
-        this.expresion = expresion;
+        this.instrucciones = instrucciones;
     }
 
     @Override
     public Object interpretar(Arbol arbol, TablaSimbolos tabla) {
-        var resultado = this.expresion.interpretar(arbol, tabla);
-        
-        if(resultado instanceof Errores){
-            return resultado;
+        String concatenacion = "";
+        for (Instruccion expresion : instrucciones) {
+            var resultado = expresion.interpretar(arbol, tabla);
+            if (resultado instanceof Errores) {
+                return resultado;
+            }
+            concatenacion += resultado.toString()+" ";
         }
         
-        arbol.writeln(resultado.toString());
+        
+        
+        
+        arbol.writeln(concatenacion);
         return null;
     }
+    
     
 }

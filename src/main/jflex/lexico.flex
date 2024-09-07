@@ -42,8 +42,8 @@ FINCADENA=";"
 DOSPUNTOS = ":"
 //LLAVE1="{"
 //LLAVE2="}"
-//CORCHETE1 = "["
-//CORCHETE2 = "]"
+CORCHETE1 = "["
+CORCHETE2 = "]"
 COMA = ","
 PUNTO = "."
 
@@ -97,6 +97,8 @@ REPEAT = "repeat"
 UNTIL = "until"
 BREAK = "break"
 CONTINUE = "continue"
+ARRAY = "array"
+
 
 INTEGER = "integer"
 CHAR = "char"
@@ -123,6 +125,7 @@ BOOL = "boolean"
 <YYINITIAL> {UNTIL}           {return new Symbol(sym.UNTIL, yyline, yycolumn,yytext());}
 <YYINITIAL> {BREAK}           {return new Symbol(sym.BREAK, yyline, yycolumn,yytext());}
 <YYINITIAL> {CONTINUE}           {return new Symbol(sym.CONTINUE, yyline, yycolumn,yytext());}
+<YYINITIAL> {ARRAY}           {return new Symbol(sym.ARRAY, yyline, yycolumn,yytext());}
 
 <YYINITIAL> {INTEGER}       {return new Symbol(sym.INTEGER, yyline, yycolumn,yytext());}
 <YYINITIAL> {CHAR}      {return new Symbol(sym.CHAR, yyline, yycolumn,yytext());}
@@ -173,6 +176,8 @@ BOOL = "boolean"
 
 <YYINITIAL> {PAR1}          {return new Symbol(sym.PAR1, yyline, yycolumn,yytext());}
 <YYINITIAL> {PAR2}          {return new Symbol(sym.PAR2, yyline, yycolumn,yytext());}
+<YYINITIAL> {CORCHETE1}          {return new Symbol(sym.CORCHETE1, yyline, yycolumn,yytext());}
+<YYINITIAL> {CORCHETE2}          {return new Symbol(sym.CORCHETE2, yyline, yycolumn,yytext());}
 
 
 <YYINITIAL> {DIFERENTE}     {return new Symbol(sym.DIFERENTE, yyline, yycolumn,yytext());}
