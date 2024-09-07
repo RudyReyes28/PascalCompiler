@@ -44,8 +44,16 @@ public class DeclaracionConstante extends Instruccion{
         /*if (this.valor.tipo.getTipo() != this.tipo.getTipo()) {
             return new Errores("SEMANTICO", "Tipo de dato erroneo, no se puede asignar el valor de tipo "+this.valor.tipo.getTipo()+ " a la variable de tipo "+ this.tipo.getTipo(), this.linea, this.columna);
         }*/
+        
+        Tipo tipoDatoVar = arbol.getTablaTipos().getTipo(this.valor.tipo.getNombre());
+        
+        if(tipoDatoVar== null){
+             return new Errores("SEMANTICO", "El tipo de dato no existe", this.linea, this.columna);
 
-        Simbolo s = new Simbolo(mutabilidad,this.valor.tipo, this.identificador, valorInterpretado, this.linea, this.columna);
+        }
+        this.tipo = tipoDatoVar;
+
+        Simbolo s = new Simbolo(mutabilidad,this.tipo, this.identificador, valorInterpretado, this.linea, this.columna);
 
         boolean creacion = tabla.setVariable(s);
         if (!creacion) {

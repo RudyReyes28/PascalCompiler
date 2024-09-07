@@ -57,7 +57,7 @@ public class DeclaracionVarArreglo extends Instruccion{
         if((this.indiceInicial.tipo.getTipo() == TipoDato.INTEGER) && (this.indiceFinal.tipo.getTipo() == TipoDato.INTEGER)){
             for (String identificador : this.nombresTipos) {
 
-                Tipo t = new Tipo(identificador, this.tipo.getTipo());
+                Tipo t = new Tipo(this.tipo.getNombre(), this.tipo.getTipo());
                 t.setMinimo((int) indiceI);
                 t.setMaximo((int) indiceF);
                 t.setDimension((int) indiceF - (int) indiceI+1);

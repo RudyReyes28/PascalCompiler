@@ -57,9 +57,14 @@ public class AsignacionVariable extends Instruccion{
                     this.linea, this.columna);
         }
         
+        if(variable.getTipo().getNombreEstructura().equalsIgnoreCase("array")){
+            return new Errores("SEMANTICO", "La variable \" "+id+" \" es de tipo array, no se puede asignar el valor",
+                    this.linea, this.columna);
+        }
+        
         variable.setValor(nuevoValor);
-        variable.setLinea(this.linea);
-        variable.setColumna(this.columna);
+        //variable.setLinea(this.linea);
+        //variable.setColumna(this.columna);
         
         return null;
     }

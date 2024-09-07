@@ -61,11 +61,21 @@ public class DeclaracionVariable extends Instruccion{
        
         for (String identificador : identificadores) {
             //aqui deberia de definir mas tarde el valor a guardar, ya que puede ser arreglo por ahora o book
-            Simbolo s = new Simbolo(mutabilidad, this.tipo, identificador, valorInterpretado, this.linea, this.columna);
+            if(this.tipo.getNombreEstructura().equalsIgnoreCase("array")){
+                Object[] valores = new Object[this.tipo.getDimension()];
+                Simbolo s = new Simbolo(true, this.tipo, identificador, valores, this.linea, this.columna);
 
-            boolean creacion = tabla.setVariable(s);
-            if (!creacion) {
-                return new Errores("SEMANTICO", "La variable \"" + identificador + "\" ya existe", this.linea, this.columna);
+                boolean creacion = tabla.setVariable(s);
+                if (!creacion) {
+                    return new Errores("SEMANTICO", "La variable \"" + identificador + "\" ya existe", this.linea, this.columna);
+                }
+            } else {
+                Simbolo s = new Simbolo(mutabilidad, this.tipo, identificador, valorInterpretado, this.linea, this.columna);
+
+                boolean creacion = tabla.setVariable(s);
+                if (!creacion) {
+                    return new Errores("SEMANTICO", "La variable \"" + identificador + "\" ya existe", this.linea, this.columna);
+                }
             }
         }
 

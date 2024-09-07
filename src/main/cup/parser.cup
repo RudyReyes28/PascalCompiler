@@ -10,6 +10,7 @@ import java.util.Collections;
 //instrucciones
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.writeln.*;
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.variables.*;
+import com.rudyreyes.pascalcompiler.modelo.instrucciones.arrays.*;
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.sentenciasControl.*;
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.tipos.*;
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.ciclos.*;
@@ -75,6 +76,7 @@ nonterminal Instruccion expresion, expresionAritmetica, expresionRelacional, exp
 nonterminal LinkedList<Instruccion> expresion_conca;
 nonterminal LinkedList<String> listado_id;
 nonterminal Instruccion writeln, asignacion_variable, sentencia_if, sentencia_ifelse, opcion_else;
+nonterminal Instruccion asignacion_array;
 nonterminal Instruccion sentencia_case, sentencia_while, sentencia_for, sentencia_repeat;
 nonterminal Instruccion transferencia_break, transferencia_continue;
 
@@ -110,6 +112,7 @@ instrucciones ::= instrucciones:a instruccion:b     {: RESULT = a; RESULT.add(b)
 
 instruccion ::= writeln:a       FINCADENA            {: RESULT= a; :}
                 | asignacion_variable:a  FINCADENA   {: RESULT= a; :}
+                | asignacion_array:a  FINCADENA   {: RESULT= a; :}
                 | sentencia_if :a                    {: RESULT= a; :}
 //                | sentencia_ifelse:a                 {: RESULT= a; :}
                 | sentencia_case : a                {: RESULT= a; :}
@@ -205,9 +208,11 @@ expresion_conca ::= expresion_conca:a COMA expresion:b           {: RESULT = a;
  asignacion_variable ::= ID:a DOSPUNTOS IGUAL expresion:b   {:   RESULT=new AsignacionVariable(a, b, aleft, aright);  :}
 ;
 
+ asignacion_array ::= ID:a CORCHETE1 expresion:b CORCHETE2 DOSPUNTOS IGUAL expresion:c  {:   RESULT=new AsignacionVarArreglo(a, b, c, aleft, aright);  :}
+;
 
-sentencia_if ::= IF PAR1 expresion:a PAR2 THEN instruccion:b {:  RESULT = new SentenciaIf(a, new LinkedList<>(Collections.singletonList(b)), aleft, aright);:}
-                |IF PAR1 expresion:a PAR2 THEN BEGIN instrucciones:b END FINCADENA {:   RESULT = new SentenciaIf(a, b, aleft, aright);   :}
+sentencia_if ::= IF expresion:a  THEN instruccion:b {:  RESULT = new SentenciaIf(a, new LinkedList<>(Collections.singletonList(b)), aleft, aright);:}
+                |IF expresion:a THEN BEGIN instrucciones:b END FINCADENA {:   RESULT = new SentenciaIf(a, b, aleft, aright);   :}
                
 
 ;
@@ -256,8 +261,8 @@ expresiones_case ::= expresiones_case:a COMA expresion:b {:RESULT = a; RESULT.ad
 
 ;
 
-sentencia_while ::= WHILE PAR1 expresion:a PAR2 DO BEGIN instrucciones:b END FINCADENA  {:   RESULT = new SentenciaWhile(a, b, aleft, aright);   :}
-                | WHILE PAR1 expresion:a PAR2 DO instruccion:b  {:   RESULT = new SentenciaWhile(a,new LinkedList<>(Collections.singletonList(b)), aleft, aright);   :}
+sentencia_while ::= WHILE expresion:a  DO BEGIN instrucciones:b END FINCADENA  {:   RESULT = new SentenciaWhile(a, b, aleft, aright);   :}
+                | WHILE  expresion:a  DO instruccion:b  {:   RESULT = new SentenciaWhile(a,new LinkedList<>(Collections.singletonList(b)), aleft, aright);   :}
 ;
 
 sentencia_for ::= FOR ID:a DOSPUNTOS IGUAL expresion:b TO expresion:c DO instruccion:d     
@@ -291,6 +296,7 @@ expresion ::=  expresionAritmetica:a        {: RESULT = a; :}
             | CARACTER:a                    {:   RESULT = new Nativo(a, new Tipo("char",TipoDato.CARACTER), aleft, aright );   :}
             | BOOLEAN:a                     {:   RESULT = new Nativo(Boolean.parseBoolean(a), new Tipo("boolean",TipoDato.BOOLEANO), aleft, aright );   :}
             | ID:a                          {:   RESULT = new AccesoVariable(a, aleft, aright);   :}
+            | ID:a CORCHETE1 expresion:b CORCHETE2 {: RESULT = new AccesoVarArreglo(a, b, aleft, aright );:}
 ;
 
 expresionAritmetica ::= MENOS expresion:a             {:   RESULT = new OperacionNegacionU(a, aleft, aright);   :} %prec UMENOS
