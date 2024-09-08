@@ -18,27 +18,22 @@ import java.util.LinkedList;
  *
  * @author rudyo
  */
-public class SentenciaIf extends Instruccion{
-    
+public class SentenciaIfElseIf extends Instruccion{
     private Instruccion condicion;
     private LinkedList<Instruccion> instrucciones;
+    private Instruccion instruccionesElseIf;
 
-    public SentenciaIf(Instruccion condicion, LinkedList<Instruccion> instrucciones, int linea, int columna) {
+    public SentenciaIfElseIf(Instruccion condicion, LinkedList<Instruccion> instrucciones, Instruccion instruccionesElseIf, int linea, int columna) {
         super(new Tipo(TipoDato.VOID), linea, columna);
         this.condicion = condicion;
         this.instrucciones = instrucciones;
+        this.instruccionesElseIf = instruccionesElseIf;
     }
+
     
-    /*public SentenciaIf(Instruccion condicion, Instruccion instruccion, int linea, int columna) {
-        super(new Tipo(TipoDato.VOID), linea, columna);
-        this.condicion = condicion;
-        this.instrucciones = new LinkedList<>();
-        this.instrucciones.add(instruccion);
-    }*/
 
     @Override
     public Object interpretar(Arbol arbol, TablaSimbolos tabla) {
-        
         var cond = this.condicion.interpretar(arbol, tabla);
         if (cond instanceof Errores) {
             return cond;
@@ -51,7 +46,7 @@ public class SentenciaIf extends Instruccion{
         }
         
         var newTabla = new TablaSimbolos(tabla);
-        newTabla.setNombre(tabla.getNombre()+"-if");
+        newTabla.setNombre(tabla.getNombre()+"-else:if");
         arbol.agregarTablaEntorno(newTabla);
         if ((boolean) cond) {
             for (var i : this.instrucciones) {
@@ -62,7 +57,7 @@ public class SentenciaIf extends Instruccion{
                 if (i instanceof SentenciaContinue) {
                     return i;
                 }
-
+                
                 /*if (i instanceof FuncionReturn) {
                     var res = i.interpretar(arbol, newTabla);
                     if (res instanceof Errores) {
@@ -80,21 +75,42 @@ public class SentenciaIf extends Instruccion{
                     return resultado;
                 }
                 
-                /*if(resultado instanceof FuncionReturn){
-                    return resultado;
-                }*/
-                
                 if (resultado instanceof SentenciaContinue) {
                     return resultado;
                 }
                 
+                /*if(resultado instanceof FuncionReturn){
+                    return resultado;
+                }*/
+                
                 if (resultado instanceof Errores) {
                     return resultado;
                 }
+            }
+        }else{
+            
+                var resultado = instruccionesElseIf.interpretar(arbol, newTabla);
                 /*
                     Manejo de errores
                 */
-            }
+                
+                if (resultado instanceof SentenciaBreak) {
+                    return resultado;
+                }
+                
+                if (resultado instanceof SentenciaContinue) {
+                    
+                    return resultado;
+                }
+                
+                /*if(resultado instanceof FuncionReturn){
+                    return resultado;
+                }*/
+                
+                if (resultado instanceof Errores) {
+                    return resultado;
+                }
+            
         }
         
         return null;

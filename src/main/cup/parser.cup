@@ -75,7 +75,7 @@ nonterminal Instruccion instruccion, instruccion_fin;
 nonterminal Instruccion expresion, expresionAritmetica, expresionRelacional, expresionLogica;
 nonterminal LinkedList<Instruccion> expresion_conca;
 nonterminal LinkedList<String> listado_id;
-nonterminal Instruccion writeln, asignacion_variable, sentencia_if, sentencia_ifelse, opcion_else;
+nonterminal Instruccion writeln, sentencias_ifs, asignacion_variable, sentencia_if, sentencia_ifelse, opcion_else;
 nonterminal Instruccion asignacion_array;
 nonterminal Instruccion sentencia_case, sentencia_while, sentencia_for, sentencia_repeat;
 nonterminal Instruccion transferencia_break, transferencia_continue;
@@ -85,6 +85,7 @@ nonterminal CasoCase caso_case;
 nonterminal LinkedList<CasoCase> casos_case;
 nonterminal LinkedList<Instruccion> expresiones_case;
  
+precedence left ELSE;
 precedence left ANDT, ORE;
 precedence left OR;
 precedence left AND;
@@ -115,21 +116,32 @@ instruccion ::= writeln:a       FINCADENA            {: RESULT= a; :}
                 | asignacion_array:a  FINCADENA   {: RESULT= a; :}
                 | sentencia_if :a                    {: RESULT= a; :}
 //                | sentencia_ifelse:a                 {: RESULT= a; :}
+//                | sentencias_ifs:a                  {: RESULT= a; :}
                 | sentencia_case : a                {: RESULT= a; :}
                 | sentencia_while:a                 {: RESULT =a; :}
                 | sentencia_for:a                 {: RESULT =a; :}
                 | sentencia_repeat:a                 {: RESULT =a; :}
-                | transferencia_break:a        {: RESULT= a; :}
-                | transferencia_continue:a     {: RESULT= a; :}
+                | transferencia_break:a   FINCADENA     {: RESULT= a; :}
+                | transferencia_continue:a FINCADENA    {: RESULT= a; :}
                 | error FINCADENA
                 | error 
 ;
 
-//instruccion_fin ::= writeln:a                   {: RESULT= a; :}
-//                | asignacion_variable:a         {: RESULT= a; :}
+instruccion_fin ::= writeln:a                   {: RESULT= a; :}
+                | asignacion_variable:a         {: RESULT= a; :}
 //                | sentencia_if :a               {: RESULT= a; :}
+                | asignacion_array:a     {: RESULT= a; :}
+//                | sentencia_if :a                    {: RESULT= a; :}
+//                | sentencia_ifelse:a                 {: RESULT= a; :}
+//                | sentencias_ifs:a                  {: RESULT= a; :}
+//                | sentencia_case : a                {: RESULT= a; :}
+//                | sentencia_while:a                 {: RESULT =a; :}
+//                | sentencia_for:a                 {: RESULT =a; :}
+//                | sentencia_repeat:a                 {: RESULT =a; :}
+//                | transferencia_break:a          {: RESULT= a; :}
+//                | transferencia_continue:a      {: RESULT= a; :}
 //                | sentencia_ifelse:a            {: RESULT= a; :}
-//;
+;
 
 declaraciones_tipos ::=declaraciones_tipos:a declaracion_tipo:b {: RESULT = a; RESULT.add(b); :}
                     | declaracion_tipo:a {: RESULT = new LinkedList<>(); RESULT.add(a); :}
@@ -211,10 +223,19 @@ expresion_conca ::= expresion_conca:a COMA expresion:b           {: RESULT = a;
  asignacion_array ::= ID:a CORCHETE1 expresion:b CORCHETE2 DOSPUNTOS IGUAL expresion:c  {:   RESULT=new AsignacionVarArreglo(a, b, c, aleft, aright);  :}
 ;
 
+//sentencias_ifs ::= sentencia_if:a {:RESULT = a; :}
+//                | sentencia_ifelse:a {:RESULT = a; :} %prec IFELSE
+//;
+
 sentencia_if ::= IF expresion:a  THEN instruccion:b {:  RESULT = new SentenciaIf(a, new LinkedList<>(Collections.singletonList(b)), aleft, aright);:}
                 |IF expresion:a THEN BEGIN instrucciones:b END FINCADENA {:   RESULT = new SentenciaIf(a, b, aleft, aright);   :}
-               
-
+                |IF  expresion:a THEN BEGIN instrucciones:b END ELSE  instruccion:c {:   RESULT = new SentenciaIfElse(a, b,new LinkedList<>(Collections.singletonList(c)) , aleft, aright);   :}
+                | IF expresion:a THEN instruccion_fin:b ELSE instruccion:c {:  RESULT = new SentenciaIfElse(a, new LinkedList<>(Collections.singletonList(b)), new LinkedList<>(Collections.singletonList(c)), aleft, aright);:} 
+                |IF expresion:a THEN instruccion_fin:b ELSE BEGIN instrucciones:c END FINCADENA {:   RESULT = new SentenciaIfElse(a, new LinkedList<>(Collections.singletonList(b)),c , aleft, aright);   :}
+                |IF expresion:a THEN BEGIN instrucciones:b END ELSE BEGIN instrucciones:c END FINCADENA {:   RESULT = new SentenciaIfElse(a, b,c , aleft, aright);   :}
+//                |IF expresion:a THEN instruccion_fin:b ELSE sentencia_if:c {:   RESULT = new SentenciaIfElseIf(a, new LinkedList<>(Collections.singletonList(b)),c , aleft, aright);   :}
+//                |IF expresion:a THEN BEGIN instrucciones:b END ELSE sentencia_if:c {:   RESULT = new SentenciaIfElseIf(a, b,c , aleft, aright);   :}
+                
 ;
 
 //sentencia_if ::= IF PAR1 expresion:a PAR2 THEN instruccion:b opcion_else:c {: RESULT = c == null ? new SentenciaIf(a, new LinkedList<>(Collections.singletonList(b)), aleft, aright) : new SentenciaIfElse(a, new LinkedList<>(Collections.singletonList(b)), c, aleft, aright); :}
@@ -229,11 +250,11 @@ sentencia_if ::= IF expresion:a  THEN instruccion:b {:  RESULT = new SentenciaIf
 //sentencia_ifelse ::= IF PAR1 expresion:a PAR2 THEN instruccion:b ELSE  instruccion:c {:  RESULT = new SentenciaIfElse(a, new LinkedList<>(Collections.singletonList(b)), new LinkedList<>(Collections.singletonList(c)), aleft, aright);:}
 //                |IF PAR1 expresion:a PAR2 THEN BEGIN instrucciones:b END ELSE  instruccion:c {:   RESULT = new SentenciaIfElse(a, b,new LinkedList<>(Collections.singletonList(c)) , aleft, aright);   :}
 //                |IF PAR1 expresion:a PAR2 THEN instruccion:b ELSE BEGIN instrucciones:c END FINCADENA {:   RESULT = new SentenciaIfElse(a, new LinkedList<>(Collections.singletonList(b)),c , aleft, aright);   :}
-//                |IF PAR1 expresion:a PAR2 THEN BEGIN instrucciones:b END ELSE BEGIN instrucciones:c END FINCADENA {:   RESULT = new SentenciaIfElse(a, b,c , aleft, aright);   :}
+//               |IF PAR1 expresion:a PAR2 THEN BEGIN instrucciones:b END ELSE BEGIN instrucciones:c END FINCADENA {:   RESULT = new SentenciaIfElse(a, b,c , aleft, aright);   :}
 //;
 
 
-sentencia_case ::= CASE PAR1 expresion:a PAR2 OF casos_case:b ELSE BEGIN instrucciones:c  END FINCADENA {:
+sentencia_case ::= CASE  expresion:a  OF casos_case:b ELSE BEGIN instrucciones:c  END FINCADENA {:
                         RESULT = new SentenciaCase(a, b, c, aleft, aright);
                     :}
 
@@ -241,7 +262,7 @@ sentencia_case ::= CASE PAR1 expresion:a PAR2 OF casos_case:b ELSE BEGIN instruc
 //                        RESULT = new SentenciaCase(a, b, null, aleft, aright);
 //                   :}
 
-                  | CASE PAR1 expresion:a PAR2 OF casos_case:b ELSE  instruccion:c  END FINCADENA {:
+                  | CASE expresion:a OF casos_case:b ELSE  instruccion:c  END FINCADENA {:
                         RESULT = new SentenciaCase(a, b, new LinkedList<>(Collections.singletonList(c)), aleft, aright);
                     :}
 
@@ -280,10 +301,10 @@ sentencia_repeat ::= REPEAT  instrucciones:b  UNTIL expresion:a  FINCADENA {:   
 
 ;
 
-transferencia_break::=  BREAK:a FINCADENA      {:    RESULT = new SentenciaBreak(aleft, aright);     :}
+transferencia_break::=  BREAK:a      {:    RESULT = new SentenciaBreak(aleft, aright);     :}
 ;
 
-transferencia_continue::=  CONTINUE:a FINCADENA      {:    RESULT = new SentenciaContinue(aleft, aright);     :}
+transferencia_continue::=  CONTINUE:a      {:    RESULT = new SentenciaContinue(aleft, aright);     :}
 ;
 
 //AGREGAR UNA EXPRESION COMA

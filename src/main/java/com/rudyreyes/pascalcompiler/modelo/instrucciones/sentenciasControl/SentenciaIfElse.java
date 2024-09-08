@@ -87,7 +87,7 @@ public class SentenciaIfElse extends Instruccion {
             }
         }else{
             for (var i : this.instruccionesElse) {
-                /*if (i instanceof SentenciaBreak) {
+                if (i instanceof SentenciaBreak) {
                     return i;
                 }
                 
@@ -95,7 +95,7 @@ public class SentenciaIfElse extends Instruccion {
                     return i;
                 }
                 
-                if (i instanceof FuncionReturn) {
+                /*if (i instanceof FuncionReturn) {
                     var res = i.interpretar(arbol, newTabla);
                     if (res instanceof Errores) {
                         return res;
@@ -108,7 +108,7 @@ public class SentenciaIfElse extends Instruccion {
                 }
                 
                 var resultado = i.interpretar(arbol, newTabla);
-                /*if (resultado instanceof SentenciaBreak) {
+                if (resultado instanceof SentenciaBreak) {
                     return resultado;
                 }
                 
@@ -116,7 +116,7 @@ public class SentenciaIfElse extends Instruccion {
                     return resultado;
                 }
                 
-                if(resultado instanceof FuncionReturn){
+                /*if(resultado instanceof FuncionReturn){
                     return resultado;
                 }*/
                 
