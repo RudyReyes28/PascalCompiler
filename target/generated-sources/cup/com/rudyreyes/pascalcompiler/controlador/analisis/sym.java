@@ -66,6 +66,7 @@ public interface sym {
   public static final int THEN = 39;
   public static final int END = 9;
   public static final int STRING = 20;
+  public static final int PROCEDURE = 61;
   public static final int VAR = 11;
   public static final int DO = 50;
   public static final int MAS = 24;
@@ -130,7 +131,8 @@ public interface sym {
   "ARRAY",
   "CORCHETE1",
   "CORCHETE2",
-  "FUNCTION"
+  "FUNCTION",
+  "PROCEDURE"
   };
 }
 

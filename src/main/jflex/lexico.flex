@@ -99,6 +99,7 @@ BREAK = "break"
 CONTINUE = "continue"
 ARRAY = "array"
 FUNCTION = "function"
+PROCEDURE = "procedure"
 
 INTEGER = "integer"
 CHAR = "char"
@@ -127,6 +128,7 @@ BOOL = "boolean"
 <YYINITIAL> {CONTINUE}           {return new Symbol(sym.CONTINUE, yyline, yycolumn,yytext());}
 <YYINITIAL> {ARRAY}           {return new Symbol(sym.ARRAY, yyline, yycolumn,yytext());}
 <YYINITIAL> {FUNCTION}           {return new Symbol(sym.FUNCTION, yyline, yycolumn,yytext());}
+<YYINITIAL> {PROCEDURE}           {return new Symbol(sym.PROCEDURE, yyline, yycolumn,yytext());}
 
 <YYINITIAL> {INTEGER}       {return new Symbol(sym.INTEGER, yyline, yycolumn,yytext());}
 <YYINITIAL> {CHAR}      {return new Symbol(sym.CHAR, yyline, yycolumn,yytext());}

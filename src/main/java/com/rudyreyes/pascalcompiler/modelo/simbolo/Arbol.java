@@ -6,6 +6,7 @@ package com.rudyreyes.pascalcompiler.modelo.simbolo;
 
 import com.rudyreyes.pascalcompiler.modelo.abstracto.Instruccion;
 import com.rudyreyes.pascalcompiler.modelo.errores.Errores;
+import com.rudyreyes.pascalcompiler.modelo.instrucciones.funciones.DeclaracionFuncion;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -178,17 +179,17 @@ public class Arbol {
         this.structs.add(struct);
     }
 
-    /*public Instruccion getFuncion(String id) {
+    public Instruccion getFuncion(String id) {
         for (var i : this.funciones) {
-            if (i instanceof Metodo) {
-                Metodo metodo = (Metodo) i;
-                if (metodo.id.equalsIgnoreCase(id)) {
+            if (i instanceof DeclaracionFuncion) {
+                DeclaracionFuncion metodo = (DeclaracionFuncion) i;
+                if (metodo.nombreFuncion.equalsIgnoreCase(id)) {
                     return metodo;
                 }
             }
         }
         return null;
-    }*/
+    }
     
     /*public Instruccion getStruct(String id){
         for (var i : this.structs) {

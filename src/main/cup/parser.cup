@@ -64,7 +64,7 @@ terminal NOT, AND, THEN, ELSE, OR, ANDT, ORE;
 terminal String BOOLEAN, CARACTER;
 terminal IF,CASE, OF, WHILE, DO, FOR, TO, REPEAT, UNTIL;
 terminal BREAK, CONTINUE, ARRAY, CORCHETE1, CORCHETE2;
-terminal FUNCTION;
+terminal FUNCTION, PROCEDURE;
 
 //no terminales
 nonterminal LinkedList<Instruccion> estructura, instrucciones,cuerpo ;
@@ -83,10 +83,13 @@ nonterminal Instruccion sentencia_case, sentencia_while, sentencia_for, sentenci
 nonterminal Instruccion transferencia_break, transferencia_continue;
 
 //funciones
-nonterminal Instruccion declaracion_funcion;
+nonterminal Instruccion declaracion_funcion, declaracion_procedimiento;
 nonterminal LinkedList<HashMap> lista_param_f;
 nonterminal LinkedList<String> lista_params_id;
 nonterminal String tipo_id_f;
+nonterminal LinkedList<Instruccion> parametros_llamada;
+nonterminal Instruccion llamada_funcion, llamada_metodo;
+
 
 nonterminal CasoCase caso_case;
 nonterminal LinkedList<CasoCase> casos_case;
@@ -112,6 +115,7 @@ estructura ::=  TYPE declaraciones_tipos:a {: RESULT = a; :}
                 |CONST declaracion_constantes:a {: RESULT = a; :}
                 | VAR declaraciones_variables:a {: RESULT = a; :}
                 | declaracion_funcion:a {:RESULT = new LinkedList<>(Collections.singletonList(a)); :}
+                | declaracion_procedimiento:a {:RESULT = new LinkedList<>(Collections.singletonList(a)); :}
                 |BEGIN instrucciones:a  END PUNTO    {:   RESULT = a;   :}
 ;
 
@@ -122,6 +126,7 @@ instrucciones ::= instrucciones:a instruccion:b     {: RESULT = a; RESULT.add(b)
 instruccion ::= writeln:a       FINCADENA            {: RESULT= a; :}
                 | asignacion_variable:a  FINCADENA   {: RESULT= a; :}
                 | asignacion_array:a  FINCADENA   {: RESULT= a; :}
+                | llamada_metodo:a FINCADENA        {: RESULT= a; :}
                 | sentencia_if :a                    {: RESULT= a; :}
                 | sentencia_case : a                {: RESULT= a; :}
                 | sentencia_while:a                 {: RESULT =a; :}
@@ -153,6 +158,24 @@ instruccion_fin ::= writeln:a                   {: RESULT= a; :}
 //                        |declaracion_funcion:a {: RESULT = new LinkedList<>(); RESULT.add(a); :}
 //;
 
+declaracion_procedimiento ::= PROCEDURE ID:a PAR1 lista_param_f:b PAR2 FINCADENA VAR declaraciones_variables:d BEGIN instrucciones:e END FINCADENA 
+{:          LinkedList<Instruccion> cuerpo = new LinkedList<>();
+            cuerpo.addAll(d); // d es LinkedList<Instruccion>
+            cuerpo.addAll(e);  
+        RESULT = new DeclaracionFuncion(a, b, "void", cuerpo, aleft, aright); 
+:}
+			|PROCEDURE ID:a PAR1 lista_param_f:b PAR2 FINCADENA BEGIN instrucciones:d END FINCADENA {:RESULT = new DeclaracionFuncion(a, b, "void", d,aleft, aright);:}
+
+                        |PROCEDURE ID:a PAR1 PAR2 FINCADENA VAR declaraciones_variables:d BEGIN instrucciones:e END FINCADENA 
+{:          LinkedList<Instruccion> cuerpo = new LinkedList<>();
+            cuerpo.addAll(d); // d es LinkedList<Instruccion>
+            cuerpo.addAll(e);  
+        RESULT = new DeclaracionFuncion(a, new LinkedList<HashMap>(),"void", cuerpo, aleft, aright); 
+:}
+			|PROCEDURE ID:a PAR1  PAR2 FINCADENA BEGIN instrucciones:d END FINCADENA {:RESULT = new DeclaracionFuncion(a, new LinkedList<HashMap>(), "void", d,aleft, aright);:}
+
+;
+
 declaracion_funcion ::= FUNCTION ID:a PAR1 lista_param_f:b PAR2 DOSPUNTOS tipos_dato_var:c FINCADENA VAR declaraciones_variables:d BEGIN instrucciones:e END FINCADENA 
 {:          LinkedList<Instruccion> cuerpo = new LinkedList<>();
             cuerpo.addAll(d); // d es LinkedList<Instruccion>
@@ -160,6 +183,15 @@ declaracion_funcion ::= FUNCTION ID:a PAR1 lista_param_f:b PAR2 DOSPUNTOS tipos_
         RESULT = new DeclaracionFuncion(a, b, c, cuerpo, aleft, aright); 
 :}
 			|FUNCTION ID:a PAR1 lista_param_f:b PAR2 DOSPUNTOS tipos_dato_var:c FINCADENA BEGIN instrucciones:d END FINCADENA {:RESULT = new DeclaracionFuncion(a, b, c, d,aleft, aright);:}
+
+                        |FUNCTION ID:a PAR1 PAR2 DOSPUNTOS tipos_dato_var:c FINCADENA VAR declaraciones_variables:d BEGIN instrucciones:e END FINCADENA 
+{:          LinkedList<Instruccion> cuerpo = new LinkedList<>();
+            cuerpo.addAll(d); // d es LinkedList<Instruccion>
+            cuerpo.addAll(e);  
+        RESULT = new DeclaracionFuncion(a, new LinkedList<HashMap>(), c, cuerpo, aleft, aright); 
+:}
+			|FUNCTION ID:a PAR1  PAR2 DOSPUNTOS tipos_dato_var:c FINCADENA BEGIN instrucciones:d END FINCADENA {:RESULT = new DeclaracionFuncion(a, new LinkedList<HashMap>(), c, d,aleft, aright);:}
+
 ;
 
 
@@ -195,6 +227,24 @@ lista_params_id ::= lista_params_id:a COMA tipo_id_f:b  {: RESULT = a;
  
  tipo_id_f ::= VAR ID:a {:RESULT = a; :}
 		| ID:a {:RESULT = a; :}
+;
+
+llamada_metodo ::= ID:a PAR1 parametros_llamada:b PAR2     {: RESULT= new LlamadoFuncion(a,b, aleft, aright); :}
+                | ID:a PAR1 PAR2                           {:RESULT= new LlamadoFuncion(a, new LinkedList<Instruccion>(), aleft, aright); :}
+;
+
+llamada_funcion ::= ID:a PAR1 parametros_llamada:b PAR2     {: RESULT= new LlamadoFuncion(a,b, aleft, aright); :}
+                | ID:a PAR1 PAR2                           {:RESULT= new LlamadoFuncion(a, new LinkedList<Instruccion>(), aleft, aright); :}
+;
+
+
+parametros_llamada ::=  parametros_llamada:a COMA expresion:e    {:  RESULT = a;
+                                                    RESULT.add(e);
+                                                :}
+            | expresion:a                       {:  RESULT = new LinkedList<Instruccion>(); 
+                                                    RESULT.add(a);
+                                                :}
+
 ;
 
 //DECLARACION DE VARIABLES Y TIPOS
@@ -349,6 +399,7 @@ transferencia_continue::=  CONTINUE:a      {:    RESULT = new SentenciaContinue(
 expresion ::=  expresionAritmetica:a        {: RESULT = a; :}
             | expresionRelacional: a        {: RESULT = a; :}
             | expresionLogica:a             {: RESULT = a; :}
+            | llamada_funcion :a            {: RESULT= a; :}
             | ENTERO:a                      {:   RESULT = new Nativo(Integer.parseInt(a), new Tipo("integer",TipoDato.INTEGER), aleft, aright );   :}
             | DECIMAL:a                     {:   RESULT = new Nativo(new Double(a), new Tipo("real",TipoDato.REAL), aleft, aright );   :}
             | CADENA:a                      {:   RESULT = new Nativo(a, new Tipo("string",TipoDato.CADENA), aleft, aright );   :}

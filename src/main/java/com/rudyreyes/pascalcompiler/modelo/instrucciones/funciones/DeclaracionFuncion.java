@@ -45,7 +45,7 @@ public class DeclaracionFuncion extends Instruccion {
             if(i ==null ){
                 continue;
             }
-            /*if(i instanceof FuncionReturn){
+            if(i instanceof FuncionReturn){
                 
                 var res = i.interpretar(arbol, tabla);
                 if (res instanceof Errores) {
@@ -59,15 +59,19 @@ public class DeclaracionFuncion extends Instruccion {
 
 
                 
-            }*/
+            }
             var resultado = i.interpretar(arbol, tabla);
             if(resultado instanceof Errores){
                 return resultado;
             }
             
-            /*if(resultado instanceof FuncionReturn){
+            if(resultado instanceof FuncionReturn){
+                if (tipo.getTipo() == ((FuncionReturn) resultado).instruccion.tipo.getTipo()) {
                     return resultado;
-            }*/
+                } else {
+                    return new Errores("SEMANTICO", "El tipo de retorno no coincide con el tipo del metodo", linea, columna);
+                }
+            }
             
             // return;
         }

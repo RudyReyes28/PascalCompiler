@@ -6,6 +6,7 @@ package com.rudyreyes.pascalcompiler.modelo.instrucciones.variables;
 
 import com.rudyreyes.pascalcompiler.modelo.abstracto.Instruccion;
 import com.rudyreyes.pascalcompiler.modelo.errores.Errores;
+import com.rudyreyes.pascalcompiler.modelo.instrucciones.funciones.FuncionReturn;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.Arbol;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.TablaSimbolos;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.Tipo;
@@ -28,6 +29,16 @@ public class AsignacionVariable extends Instruccion{
 
     @Override
     public Object interpretar(Arbol arbol, TablaSimbolos tabla) {
+        var funcion = arbol.getFuncion(id);
+        if(funcion != null){
+            FuncionReturn miFun = new FuncionReturn(exp, linea, columna);
+             var resR = miFun.interpretar(arbol, tabla);
+             if(resR instanceof Errores){
+                 return resR;
+                }
+             return resR;
+        }
+        
         var variable = tabla.getVariable(id);
         
         //VARIBLE EXISTE
