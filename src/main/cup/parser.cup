@@ -15,6 +15,7 @@ import com.rudyreyes.pascalcompiler.modelo.instrucciones.sentenciasControl.*;
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.tipos.*;
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.ciclos.*;
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.sentenciaTransferencia.*;
+import com.rudyreyes.pascalcompiler.modelo.instrucciones.funciones.*;
 //expresiones
 import com.rudyreyes.pascalcompiler.modelo.expresiones.nativo.*;
 import com.rudyreyes.pascalcompiler.modelo.expresiones.aritmeticas.*;
@@ -63,10 +64,11 @@ terminal NOT, AND, THEN, ELSE, OR, ANDT, ORE;
 terminal String BOOLEAN, CARACTER;
 terminal IF,CASE, OF, WHILE, DO, FOR, TO, REPEAT, UNTIL;
 terminal BREAK, CONTINUE, ARRAY, CORCHETE1, CORCHETE2;
+terminal FUNCTION;
 
 //no terminales
 nonterminal LinkedList<Instruccion> estructura, instrucciones,cuerpo ;
-nonterminal LinkedList<Instruccion> declaracion_constantes;
+nonterminal LinkedList<Instruccion> declaracion_constantes, declaraciones_funciones;
 nonterminal LinkedList<Instruccion> declaraciones_tipos, declaraciones_variables;
 nonterminal Instruccion declaracion_tipo, declaracion_variables;
 nonterminal Tipo tipos_variable;
@@ -75,11 +77,16 @@ nonterminal Instruccion instruccion, instruccion_fin;
 nonterminal Instruccion expresion, expresionAritmetica, expresionRelacional, expresionLogica;
 nonterminal LinkedList<Instruccion> expresion_conca;
 nonterminal LinkedList<String> listado_id;
-nonterminal Instruccion writeln, sentencias_ifs, asignacion_variable, sentencia_if, sentencia_ifelse, opcion_else;
+nonterminal Instruccion writeln, asignacion_variable, sentencia_if;
 nonterminal Instruccion asignacion_array;
 nonterminal Instruccion sentencia_case, sentencia_while, sentencia_for, sentencia_repeat;
 nonterminal Instruccion transferencia_break, transferencia_continue;
 
+//funciones
+nonterminal Instruccion declaracion_funcion;
+nonterminal LinkedList<HashMap> lista_param_f;
+nonterminal LinkedList<String> lista_params_id;
+nonterminal String tipo_id_f;
 
 nonterminal CasoCase caso_case;
 nonterminal LinkedList<CasoCase> casos_case;
@@ -104,6 +111,7 @@ cuerpo ::= cuerpo:a estructura:b {: RESULT = a; RESULT.addAll(b); :}
 estructura ::=  TYPE declaraciones_tipos:a {: RESULT = a; :}
                 |CONST declaracion_constantes:a {: RESULT = a; :}
                 | VAR declaraciones_variables:a {: RESULT = a; :}
+                | declaracion_funcion:a {:RESULT = new LinkedList<>(Collections.singletonList(a)); :}
                 |BEGIN instrucciones:a  END PUNTO    {:   RESULT = a;   :}
 ;
 
@@ -115,8 +123,6 @@ instruccion ::= writeln:a       FINCADENA            {: RESULT= a; :}
                 | asignacion_variable:a  FINCADENA   {: RESULT= a; :}
                 | asignacion_array:a  FINCADENA   {: RESULT= a; :}
                 | sentencia_if :a                    {: RESULT= a; :}
-//                | sentencia_ifelse:a                 {: RESULT= a; :}
-//                | sentencias_ifs:a                  {: RESULT= a; :}
                 | sentencia_case : a                {: RESULT= a; :}
                 | sentencia_while:a                 {: RESULT =a; :}
                 | sentencia_for:a                 {: RESULT =a; :}
@@ -143,6 +149,55 @@ instruccion_fin ::= writeln:a                   {: RESULT= a; :}
 //                | sentencia_ifelse:a            {: RESULT= a; :}
 ;
 
+//declaraciones_funciones ::= declaraciones_funciones:a declaracion_funcion:b {: RESULT = a; RESULT.add(b); :}
+//                        |declaracion_funcion:a {: RESULT = new LinkedList<>(); RESULT.add(a); :}
+//;
+
+declaracion_funcion ::= FUNCTION ID:a PAR1 lista_param_f:b PAR2 DOSPUNTOS tipos_dato_var:c FINCADENA VAR declaraciones_variables:d BEGIN instrucciones:e END FINCADENA 
+{:          LinkedList<Instruccion> cuerpo = new LinkedList<>();
+            cuerpo.addAll(d); // d es LinkedList<Instruccion>
+            cuerpo.addAll(e);  
+        RESULT = new DeclaracionFuncion(a, b, c, cuerpo, aleft, aright); 
+:}
+			|FUNCTION ID:a PAR1 lista_param_f:b PAR2 DOSPUNTOS tipos_dato_var:c FINCADENA BEGIN instrucciones:d END FINCADENA {:RESULT = new DeclaracionFuncion(a, b, c, d,aleft, aright);:}
+;
+
+
+lista_param_f ::= lista_param_f:a FINCADENA lista_params_id:b DOSPUNTOS tipos_dato_var:c
+                  {:
+                    RESULT = a;
+                    // Recorrer la lista de identificadores (b) y asignarles el tipo (c)
+                    for (String id : b) {
+                        var hm2 = new HashMap<String, Object>();
+                        hm2.put("id", id);
+                        hm2.put("tipo", c);
+                        RESULT.add(hm2);
+                    }
+                  :}
+               | lista_params_id:a DOSPUNTOS tipos_dato_var:b
+                  {:
+                    RESULT = new LinkedList<HashMap>(); 
+                    // Recorrer la lista de identificadores (a) y asignarles el tipo (b)
+                    for (String id : a) {
+                        var hm = new HashMap<String, Object>();
+                        hm.put("id", id);
+                        hm.put("tipo", b);
+                        RESULT.add(hm);
+                    }
+                  :}
+               ;
+
+lista_params_id ::= lista_params_id:a COMA tipo_id_f:b  {: RESULT = a;
+                                                    RESULT.add(b);:}
+			| tipo_id_f:a {:RESULT = new LinkedList<String>(); 
+                                                    RESULT.add(a);:}
+;
+ 
+ tipo_id_f ::= VAR ID:a {:RESULT = a; :}
+		| ID:a {:RESULT = a; :}
+;
+
+//DECLARACION DE VARIABLES Y TIPOS
 declaraciones_tipos ::=declaraciones_tipos:a declaracion_tipo:b {: RESULT = a; RESULT.add(b); :}
                     | declaracion_tipo:a {: RESULT = new LinkedList<>(); RESULT.add(a); :}
 
@@ -238,29 +293,12 @@ sentencia_if ::= IF expresion:a  THEN instruccion:b {:  RESULT = new SentenciaIf
                 
 ;
 
-//sentencia_if ::= IF PAR1 expresion:a PAR2 THEN instruccion:b opcion_else:c {: RESULT = c == null ? new SentenciaIf(a, new LinkedList<>(Collections.singletonList(b)), aleft, aright) : new SentenciaIfElse(a, new LinkedList<>(Collections.singletonList(b)), c, aleft, aright); :}
-//               | IF PAR1 expresion:a PAR2 THEN BEGIN instrucciones:b END opcion_else:c {: RESULT = c == null ? new SentenciaIf(a, b, aleft, aright) : new SentenciaIfElse(a, b, c, aleft, aright); :}
-//;
-
-//opcion_else ::= ELSE instruccion:a {: RESULT = new LinkedList<>(Collections.singletonList(a)); :}
-//              | ELSE BEGIN instrucciones:b END  {: RESULT = b; :}
-//              | /* vacio */ {: RESULT = null; :}
-//;
-
-//sentencia_ifelse ::= IF PAR1 expresion:a PAR2 THEN instruccion:b ELSE  instruccion:c {:  RESULT = new SentenciaIfElse(a, new LinkedList<>(Collections.singletonList(b)), new LinkedList<>(Collections.singletonList(c)), aleft, aright);:}
-//                |IF PAR1 expresion:a PAR2 THEN BEGIN instrucciones:b END ELSE  instruccion:c {:   RESULT = new SentenciaIfElse(a, b,new LinkedList<>(Collections.singletonList(c)) , aleft, aright);   :}
-//                |IF PAR1 expresion:a PAR2 THEN instruccion:b ELSE BEGIN instrucciones:c END FINCADENA {:   RESULT = new SentenciaIfElse(a, new LinkedList<>(Collections.singletonList(b)),c , aleft, aright);   :}
-//               |IF PAR1 expresion:a PAR2 THEN BEGIN instrucciones:b END ELSE BEGIN instrucciones:c END FINCADENA {:   RESULT = new SentenciaIfElse(a, b,c , aleft, aright);   :}
-//;
 
 
 sentencia_case ::= CASE  expresion:a  OF casos_case:b ELSE BEGIN instrucciones:c  END FINCADENA {:
                         RESULT = new SentenciaCase(a, b, c, aleft, aright);
                     :}
 
-//                    | CASE PAR1 expresion:a PAR2 OF casos_case:b  {:
-//                        RESULT = new SentenciaCase(a, b, null, aleft, aright);
-//                   :}
 
                   | CASE expresion:a OF casos_case:b ELSE  instruccion:c  END FINCADENA {:
                         RESULT = new SentenciaCase(a, b, new LinkedList<>(Collections.singletonList(c)), aleft, aright);

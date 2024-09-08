@@ -8,6 +8,7 @@ import com.rudyreyes.pascalcompiler.controlador.analisis.parser;
 import com.rudyreyes.pascalcompiler.controlador.analisis.scanner;
 import com.rudyreyes.pascalcompiler.modelo.abstracto.Instruccion;
 import com.rudyreyes.pascalcompiler.modelo.errores.Errores;
+import com.rudyreyes.pascalcompiler.modelo.instrucciones.funciones.DeclaracionFuncion;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.Arbol;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.TablaSimbolos;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.TablaTipos;
@@ -325,17 +326,36 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                     lista.addAll(p.listaErrores);
                  
                     //almacenar funciones, metodos o structs
+                    for (var a : ast.getInstrucciones()) {
+                        if (a == null) {
+                            continue;
+                        }
+
+                        if (a instanceof DeclaracionFuncion) {
+                            ast.addFunciones(a);
+                        }
+                        //if (a instanceof DeclaracionStruct) {
+                        //    ast.addStructs(a);
+                        //}
+                        
+                        
+                    }
                    
                     for (var a : ast.getInstrucciones()) {
                         if (a == null) {
                             continue;
                         }
-                        var res = a.interpretar(ast, tabla);
-                        
-                        if (res instanceof Errores) {
-                            
-                            lista.add((Errores) res);
+                        if (a instanceof DeclaracionFuncion) {
+                            //ast.addFunciones(a);
+                        } else {
+                            var res = a.interpretar(ast, tabla);
+
+                            if (res instanceof Errores) {
+
+                                lista.add((Errores) res);
+                            }
                         }
+
                     }
                     areaConsola.setText(ast.getConsola());
                     

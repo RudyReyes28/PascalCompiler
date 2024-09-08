@@ -11,6 +11,7 @@ public interface sym {
   public static final int PAR2 = 23;
   public static final int DOSPUNTOS = 13;
   public static final int PAR1 = 22;
+  public static final int FUNCTION = 60;
   public static final int MULT = 27;
   public static final int CONST = 12;
   public static final int CHAR = 21;
@@ -128,7 +129,8 @@ public interface sym {
   "CONTINUE",
   "ARRAY",
   "CORCHETE1",
-  "CORCHETE2"
+  "CORCHETE2",
+  "FUNCTION"
   };
 }
 
