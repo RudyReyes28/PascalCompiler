@@ -9,6 +9,7 @@ import com.rudyreyes.pascalcompiler.controlador.analisis.scanner;
 import com.rudyreyes.pascalcompiler.modelo.abstracto.Instruccion;
 import com.rudyreyes.pascalcompiler.modelo.errores.Errores;
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.funciones.DeclaracionFuncion;
+import com.rudyreyes.pascalcompiler.modelo.instrucciones.tipos.DeclaracionTipoRecord;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.Arbol;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.TablaSimbolos;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.TablaTipos;
@@ -334,9 +335,15 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                         if (a instanceof DeclaracionFuncion) {
                             ast.addFunciones(a);
                         }
-                        //if (a instanceof DeclaracionStruct) {
-                        //    ast.addStructs(a);
-                        //}
+                        if (a instanceof DeclaracionTipoRecord) {
+                            var res = a.interpretar(ast, tabla);
+
+                            if (res instanceof Errores) {
+
+                                lista.add((Errores) res);
+                            }
+                           ast.addStructs(a);
+                        }
                         
                         
                     }
@@ -345,7 +352,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                         if (a == null) {
                             continue;
                         }
-                        if (a instanceof DeclaracionFuncion) {
+                        if (a instanceof DeclaracionFuncion || a instanceof DeclaracionTipoRecord) {
                             //ast.addFunciones(a);
                         } else {
                             var res = a.interpretar(ast, tabla);
@@ -363,7 +370,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                         areaConsola.append(i.toString()+"\n");
                     }
                     
-                    //areaConsola.append(tablaTipos.mostrarSimbolosTablaActual());
+                    areaConsola.append(tablaTipos.mostrarSimbolosTablaActual());
                     areaConsola.append(tabla.mostrarTodosLosSimbolos());
                 }
                 } catch (Exception ex) {

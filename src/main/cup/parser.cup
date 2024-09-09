@@ -64,7 +64,7 @@ terminal NOT, AND, THEN, ELSE, OR, ANDT, ORE;
 terminal String BOOLEAN, CARACTER;
 terminal IF,CASE, OF, WHILE, DO, FOR, TO, REPEAT, UNTIL;
 terminal BREAK, CONTINUE, ARRAY, CORCHETE1, CORCHETE2;
-terminal FUNCTION, PROCEDURE;
+terminal FUNCTION, PROCEDURE, RECORD;
 
 //no terminales
 nonterminal LinkedList<Instruccion> estructura, instrucciones,cuerpo ;
@@ -78,7 +78,7 @@ nonterminal Instruccion expresion, expresionAritmetica, expresionRelacional, exp
 nonterminal LinkedList<Instruccion> expresion_conca;
 nonterminal LinkedList<String> listado_id;
 nonterminal Instruccion writeln, asignacion_variable, sentencia_if;
-nonterminal Instruccion asignacion_array;
+nonterminal Instruccion asignacion_array, asignacion_record;
 nonterminal Instruccion sentencia_case, sentencia_while, sentencia_for, sentencia_repeat;
 nonterminal Instruccion transferencia_break, transferencia_continue;
 
@@ -90,6 +90,10 @@ nonterminal String tipo_id_f;
 nonterminal LinkedList<Instruccion> parametros_llamada;
 nonterminal Instruccion llamada_funcion, llamada_metodo;
 
+//records
+nonterminal Instruccion declaracion_record, declaracion_var_record, acceso_record ;
+nonterminal LinkedList<HashMap> lista_record;
+nonterminal Object tipo_record;
 
 nonterminal CasoCase caso_case;
 nonterminal LinkedList<CasoCase> casos_case;
@@ -126,6 +130,7 @@ instrucciones ::= instrucciones:a instruccion:b     {: RESULT = a; RESULT.add(b)
 instruccion ::= writeln:a       FINCADENA            {: RESULT= a; :}
                 | asignacion_variable:a  FINCADENA   {: RESULT= a; :}
                 | asignacion_array:a  FINCADENA   {: RESULT= a; :}
+                | asignacion_record:a FINCADENA   {: RESULT= a; :}
                 | llamada_metodo:a FINCADENA        {: RESULT= a; :}
                 | sentencia_if :a                    {: RESULT= a; :}
                 | sentencia_case : a                {: RESULT= a; :}
@@ -260,9 +265,48 @@ declaracion_tipo ::=   listado_id:a IGUAL tipos_variable:b FINCADENA
                                     {: RESULT = new DeclaracionTipoSubRango(a, b,c, aleft, aright);  :}
                       | listado_id:a IGUAL ARRAY CORCHETE1 expresion:b PUNTO PUNTO expresion:c CORCHETE2 OF tipos_variable:d FINCADENA
                                     {: RESULT = new DeclaracionTipoArreglo(a,b,c, d, aleft, aright); :}
-                      | error FINCADENA
-                      | error 
+                      | listado_id:a IGUAL ARRAY CORCHETE1 expresion:c CORCHETE2 OF tipos_variable:d FINCADENA
+                                    {: RESULT = new DeclaracionTipoArreglo(a,new Nativo(0, new Tipo("integer",TipoDato.INTEGER), aleft, aright ),c, d, aleft, aright); :}
+                        | declaracion_record:a {:RESULT = a; :}
+                        | error FINCADENA
+                        | error 
 ;
+
+
+declaracion_record ::= listado_id:a IGUAL RECORD lista_record:b END FINCADENA
+{:RESULT = new DeclaracionTipoRecord(a.getFirst(),b,  aleft, aright); :}
+;
+
+lista_record ::= lista_record:a ID:b DOSPUNTOS tipo_record:c  {:  
+                                            RESULT = a;
+                                            var hm2= new HashMap<String, Object>();
+                                            hm2.put("id", b);
+                                            hm2.put("tipo", c);
+                                            hm2.put ("valor", null);
+                                            RESULT.add(hm2);
+                                        :}
+			
+			| ID:a DOSPUNTOS tipo_record:b   {:  RESULT = new LinkedList<HashMap>(); 
+                                            var hm = new HashMap<String, Object>();
+                                            hm.put("id",a);
+                                            hm.put("tipo", b);
+                                            hm.put ("valor", null);
+                                            RESULT.add(hm);
+                                        :}
+;
+
+tipo_record ::= tipos_variable:a FINCADENA{:RESULT = a; :}
+			| expresion:b PUNTO PUNTO PUNTO expresion:c  FINCADENA
+                            {:RESULT = new Tipo("integer", TipoDato.INTEGER,  "subrange"); :}
+			| ARRAY CORCHETE1 expresion:b PUNTO PUNTO expresion:c CORCHETE2  OF tipos_variable:d FINCADENA
+                            {: RESULT = new Tipo(d.getNombre(), d.getTipo(), "array"); :}
+				
+			| ARRAY CORCHETE1 expresion:c CORCHETE2 OF tipos_variable:d FINCADENA
+			{:RESULT = new Tipo (d.getNombre(), d.getTipo(), "array"); :}
+                        | ID:a FINCADENA{: RESULT = a; :} 
+;
+
+
 
 declaracion_constantes ::=   declaracion_constantes:a ID:b IGUAL expresion:c FINCADENA 
                                     {:RESULT = a;  
@@ -284,9 +328,19 @@ declaracion_variables ::= listado_id:a DOSPUNTOS tipos_dato_var:b FINCADENA
                                     {: RESULT = new DeclaracionVarSubrango(a, b,c, aleft, aright);  :}
                         |listado_id:a DOSPUNTOS ARRAY CORCHETE1 expresion:b PUNTO PUNTO expresion:c CORCHETE2 OF tipos_dato_var:d FINCADENA
                                     {: RESULT = new DeclaracionVarArreglo(a,b,c, d, aleft, aright); :}
+                         |listado_id:a DOSPUNTOS ARRAY CORCHETE1 expresion:c CORCHETE2 OF tipos_dato_var:d FINCADENA
+                                    {: RESULT = new DeclaracionVarArreglo(a,new Nativo(0, new Tipo("integer",TipoDato.INTEGER), aleft, aright ),c, d, aleft, aright); :}
+                        
+                        | declaracion_var_record:a {:RESULT = a; :}
                         | error FINCADENA
                         | error 
 ;
+
+declaracion_var_record ::= listado_id:a IGUAL RECORD lista_record:b END FINCADENA
+            {:RESULT = new DeclaracionVarRecord(a.getFirst(),b,  aleft, aright); :}
+;
+
+
 
 listado_id ::= listado_id:a COMA ID:e {: RESULT = a;
                                                     RESULT.add(e);:}
@@ -294,12 +348,12 @@ listado_id ::= listado_id:a COMA ID:e {: RESULT = a;
                                                     RESULT.add(a);:}
 ;
 
-tipos_variable ::= INTEGER       {:   RESULT=new Tipo("integer",TipoDato.INTEGER);   :}
-                | REAL    {:   RESULT=new Tipo("real",TipoDato.REAL);   :}
-                | STRING    {:   RESULT=new Tipo("string",TipoDato.CADENA);   :}
-                | CHAR      {:   RESULT=new Tipo("char",TipoDato.CARACTER);   :}
-                | BOOL      {:   RESULT=new Tipo("boolean",TipoDato.BOOLEANO);   :}
-                | VOID      {:   RESULT=new Tipo("void",TipoDato.VOID);   :}
+tipos_variable ::= INTEGER       {:   RESULT=new Tipo("integer",TipoDato.INTEGER, "integer");   :}
+                | REAL    {:   RESULT=new Tipo("real",TipoDato.REAL, "real");   :}
+                | STRING    {:   RESULT=new Tipo("string",TipoDato.CADENA, "string");   :}
+                | CHAR      {:   RESULT=new Tipo("char",TipoDato.CARACTER, "char");   :}
+                | BOOL      {:   RESULT=new Tipo("boolean",TipoDato.BOOLEANO, "boolean");   :}
+                | VOID      {:   RESULT=new Tipo("void",TipoDato.VOID, "void");   :}
 ;
 
 tipos_dato_var ::= INTEGER       {:   RESULT="integer";   :}
@@ -323,6 +377,9 @@ expresion_conca ::= expresion_conca:a COMA expresion:b           {: RESULT = a;
 ;
 
  asignacion_variable ::= ID:a DOSPUNTOS IGUAL expresion:b   {:   RESULT=new AsignacionVariable(a, b, aleft, aright);  :}
+;
+
+asignacion_record ::= ID:a PUNTO ID:b DOSPUNTOS IGUAL expresion:c {:   RESULT=new AsignacionVarRecord(a, b, c, aleft, aright);  :}
 ;
 
  asignacion_array ::= ID:a CORCHETE1 expresion:b CORCHETE2 DOSPUNTOS IGUAL expresion:c  {:   RESULT=new AsignacionVarArreglo(a, b, c, aleft, aright);  :}
@@ -400,6 +457,7 @@ expresion ::=  expresionAritmetica:a        {: RESULT = a; :}
             | expresionRelacional: a        {: RESULT = a; :}
             | expresionLogica:a             {: RESULT = a; :}
             | llamada_funcion :a            {: RESULT= a; :}
+//            | acceso_record:a               {: RESULT= a; :}
             | ENTERO:a                      {:   RESULT = new Nativo(Integer.parseInt(a), new Tipo("integer",TipoDato.INTEGER), aleft, aright );   :}
             | DECIMAL:a                     {:   RESULT = new Nativo(new Double(a), new Tipo("real",TipoDato.REAL), aleft, aright );   :}
             | CADENA:a                      {:   RESULT = new Nativo(a, new Tipo("string",TipoDato.CADENA), aleft, aright );   :}
@@ -407,7 +465,26 @@ expresion ::=  expresionAritmetica:a        {: RESULT = a; :}
             | BOOLEAN:a                     {:   RESULT = new Nativo(Boolean.parseBoolean(a), new Tipo("boolean",TipoDato.BOOLEANO), aleft, aright );   :}
             | ID:a                          {:   RESULT = new AccesoVariable(a, aleft, aright);   :}
             | ID:a CORCHETE1 expresion:b CORCHETE2 {: RESULT = new AccesoVarArreglo(a, b, aleft, aright );:}
+            
 ;
+
+//expresion_array ::=  expresionAritmetica:a        {: RESULT = a; :}
+//            | expresionRelacional: a        {: RESULT = a; :}
+//            | expresionLogica:a             {: RESULT = a; :}
+ //           | llamada_funcion :a            {: RESULT= a; :}
+ //           | acceso_record:a               {: RESULT= a; :}
+//            | ENTERO:a                      {:   RESULT = new Nativo(Integer.parseInt(a), new Tipo("integer",TipoDato.INTEGER), aleft, aright );   :}
+//            | DECIMAL:a                     {:   RESULT = new Nativo(new Double(a), new Tipo("real",TipoDato.REAL), aleft, aright );   :}
+//            | CADENA:a                      {:   RESULT = new Nativo(a, new Tipo("string",TipoDato.CADENA), aleft, aright );   :}
+ //           | CARACTER:a                    {:   RESULT = new Nativo(a, new Tipo("char",TipoDato.CARACTER), aleft, aright );   :}
+ //           | BOOLEAN:a                     {:   RESULT = new Nativo(Boolean.parseBoolean(a), new Tipo("boolean",TipoDato.BOOLEANO), aleft, aright );   :}
+ //           | ID:a                          {:   RESULT = new AccesoVariable(a, aleft, aright);   :}
+//            | ID:a CORCHETE1 expresion:b CORCHETE2 {: RESULT = new AccesoVarArreglo(a, b, aleft, aright );:}
+//            
+//;
+
+//acceso_record ::= ID:a PUNTO ID:b {: RESULT = new AccesoVarRecord(a, b, aleft, aright); :}
+//;
 
 expresionAritmetica ::= MENOS expresion:a             {:   RESULT = new OperacionNegacionU(a, aleft, aright);   :} %prec UMENOS
             | expresion:a MAS expresion:b           {:   RESULT = new OperacionSuma(a, b, aleft, aright);   :}

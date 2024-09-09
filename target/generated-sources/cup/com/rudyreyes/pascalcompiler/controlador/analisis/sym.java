@@ -29,6 +29,7 @@ public interface sym {
   public static final int FINCADENA = 6;
   public static final int MENORIGUAL = 33;
   public static final int IGUAL = 36;
+  public static final int RECORD = 62;
   public static final int CARACTER = 45;
   public static final int TYPE = 15;
   public static final int CORCHETE2 = 59;
@@ -132,7 +133,8 @@ public interface sym {
   "CORCHETE1",
   "CORCHETE2",
   "FUNCTION",
-  "PROCEDURE"
+  "PROCEDURE",
+  "RECORD"
   };
 }
 

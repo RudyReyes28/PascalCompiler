@@ -7,6 +7,7 @@ package com.rudyreyes.pascalcompiler.modelo.simbolo;
 import com.rudyreyes.pascalcompiler.modelo.abstracto.Instruccion;
 import com.rudyreyes.pascalcompiler.modelo.errores.Errores;
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.funciones.DeclaracionFuncion;
+import com.rudyreyes.pascalcompiler.modelo.instrucciones.tipos.DeclaracionTipoRecord;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -191,10 +192,10 @@ public class Arbol {
         return null;
     }
     
-    /*public Instruccion getStruct(String id){
+    public Instruccion getStruct(String id){
         for (var i : this.structs) {
-            if (i instanceof DeclaracionStruct) {
-                DeclaracionStruct struct = (DeclaracionStruct) i;
+            if (i instanceof DeclaracionTipoRecord) {
+                DeclaracionTipoRecord struct = (DeclaracionTipoRecord) i;
                 if (struct.id.equalsIgnoreCase(id)) {
                     return struct;
                 }
@@ -202,7 +203,7 @@ public class Arbol {
         }
         
         return null;
-    }*/
+    }
     
     public int getContador() {
         this.contador++;

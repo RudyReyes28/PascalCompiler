@@ -7,11 +7,13 @@ package com.rudyreyes.pascalcompiler.modelo.instrucciones.variables;
 import com.rudyreyes.pascalcompiler.modelo.abstracto.Instruccion;
 import com.rudyreyes.pascalcompiler.modelo.errores.Errores;
 import com.rudyreyes.pascalcompiler.modelo.expresiones.nativo.Nativo;
+import com.rudyreyes.pascalcompiler.modelo.instrucciones.tipos.DeclaracionTipoRecord;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.Arbol;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.Simbolo;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.TablaSimbolos;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.Tipo;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.TipoDato;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
@@ -38,6 +40,8 @@ public class DeclaracionVariable extends Instruccion{
 
     @Override
     public Object interpretar(Arbol arbol, TablaSimbolos tabla) {
+        //if el tipo de dato es struct, si no pues simios
+        
         Tipo tipoDatoVar = arbol.getTablaTipos().getTipo(this.tipoDato);
         
         if(tipoDatoVar== null){
@@ -55,7 +59,9 @@ public class DeclaracionVariable extends Instruccion{
         }
 
         //validamos los tipo
-        if (this.valor.tipo.getTipo() != this.tipo.getTipo()) {
+        if(this.tipo.getNombreEstructura().equalsIgnoreCase("record")){
+            
+        }else if (this.valor.tipo.getTipo() != this.tipo.getTipo()) {
             return new Errores("SEMANTICO", "Tipo de dato erroneo, no se puede asignar el valor de tipo "+this.valor.tipo.getTipo()+ " a la variable de tipo "+ this.tipo.getTipo(), this.linea, this.columna);
         }
        
@@ -69,7 +75,29 @@ public class DeclaracionVariable extends Instruccion{
                 if (!creacion) {
                     return new Errores("SEMANTICO", "La variable \"" + identificador + "\" ya existe", this.linea, this.columna);
                 }
-            } else {
+            }
+            if (this.tipo.getNombreEstructura().equalsIgnoreCase("record")) {
+                var busqueda = arbol.getStruct(this.tipoDato);
+                if (busqueda == null) {
+                    return new Errores("SEMANTICO", "Struct no existente",
+                            this.linea, this.columna);
+                }
+
+                if (busqueda instanceof DeclaracionTipoRecord) {
+                    DeclaracionTipoRecord struct = (DeclaracionTipoRecord) busqueda;
+                    LinkedList<HashMap> nuevoHash = new LinkedList<>();
+                    for (HashMap map : struct.listado) {
+                        nuevoHash.add(new HashMap(map));
+                    }
+                    Simbolo s = new Simbolo(true, this.tipo, identificador, nuevoHash, this.linea, this.columna);
+
+                    boolean creacion = tabla.setVariable(s);
+                    if (!creacion) {
+                        return new Errores("SEMANTICO", "La variable \"" + identificador + "\" ya existe", this.linea, this.columna);
+                    }
+                }
+                
+            }  else {
                 Simbolo s = new Simbolo(mutabilidad, this.tipo, identificador, valorInterpretado, this.linea, this.columna);
 
                 boolean creacion = tabla.setVariable(s);
@@ -102,6 +130,11 @@ public class DeclaracionVariable extends Instruccion{
                 case BOOLEANO:
                     valor =  new Nativo(false, new Tipo(TipoDato.BOOLEANO), linea, columna-1 );
                     break;
+                    
+                case VOID:
+                    valor =  new Nativo(0, new Tipo(TipoDato.VOID), linea, columna-1 );
+                    break;
+                    
             }
         }
         
