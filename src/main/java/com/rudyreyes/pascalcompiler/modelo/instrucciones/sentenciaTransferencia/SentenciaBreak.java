@@ -23,4 +23,14 @@ public class SentenciaBreak extends Instruccion {
     public Object interpretar(Arbol arbol, TablaSimbolos tabla) {
         return null;
     }
+    
+    @Override
+    public String generarast(Arbol arbol, String anterior) {
+        return null;
+    }
+
+    @Override
+    public String generarActivacion(Arbol arbol, String anterior) {
+        return null;
+    }
 }

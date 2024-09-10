@@ -153,4 +153,16 @@ public class OperadorOr extends Instruccion{
     
     }
     
+    
+    @Override
+    public String generarast(Arbol arbol, String anterior) {
+        return null;
+    }
+
+    @Override
+    public String generarActivacion(Arbol arbol, String anterior) {
+        return null;
+    }
+    
+    
 }

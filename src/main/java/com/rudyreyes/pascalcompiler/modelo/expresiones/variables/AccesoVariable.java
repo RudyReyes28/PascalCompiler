@@ -34,4 +34,13 @@ public class AccesoVariable extends Instruccion{
         return valor.getValor();
     }
     
+    @Override
+    public String generarast(Arbol arbol, String anterior) {
+        return null;
+    }
+
+    @Override
+    public String generarActivacion(Arbol arbol, String anterior) {
+        return null;
+    }
 }

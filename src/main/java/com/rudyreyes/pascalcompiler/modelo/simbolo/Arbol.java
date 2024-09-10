@@ -25,6 +25,7 @@ public class Arbol {
     public List<TablaSimbolos> tablasEntornos;
     private LinkedList<Instruccion> funciones;
     private LinkedList<Instruccion> structs;
+    private LinkedList<Object> listaErrores;
     public int contador;
 
     public Arbol(LinkedList<Instruccion> instrucciones) {
@@ -35,6 +36,7 @@ public class Arbol {
         this.tablasEntornos = new ArrayList<>();
         this.funciones = new LinkedList<>();
         this.structs = new LinkedList<>();
+        this.listaErrores = new LinkedList<>();
     }
 
     public LinkedList<Instruccion> getInstrucciones() {
@@ -201,6 +203,24 @@ public class Arbol {
         
         return null;
     }
+
+    public LinkedList<Object> getListaErrores() {
+        return listaErrores;
+    }
+
+    public void setListaErrores(LinkedList<Object> listaErrores) {
+        this.listaErrores = listaErrores;
+    }
+    
+    public void agregarError(Object error){
+        this.listaErrores.add(error);
+    }
+    
+    public void agregarTodosErrores(LinkedList<Errores> listaErrores){
+        this.listaErrores.addAll(listaErrores);
+    }
+    
+    
     
     public int getContador() {
         this.contador++;

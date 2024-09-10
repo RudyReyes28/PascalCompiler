@@ -337,10 +337,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                     ast.setConsola("");
                     ast.setTablaGlobal(tabla);
                     ast.setTablaTipos(tablaTipos);
-                    LinkedList<Object> lista = new LinkedList<>();
-                    
-                    lista.addAll(s.listaErrores);
-                    lista.addAll(p.listaErrores);
+                    //LinkedList<Object> lista = new LinkedList<>();
+                    ast.agregarTodosErrores(s.listaErrores);
+                    ast.agregarTodosErrores(p.listaErrores);
+                    //lista.addAll(s.listaErrores);
+                    //lista.addAll(p.listaErrores);
                  
                     //almacenar funciones, metodos o structs
                     for (var a : ast.getInstrucciones()) {
@@ -356,7 +357,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
                             if (res instanceof Errores) {
 
-                                lista.add((Errores) res);
+                                //lista.add((Errores) res);
                             }
                            ast.addStructs(a);
                         }
@@ -375,14 +376,14 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
                             if (res instanceof Errores) {
 
-                                lista.add((Errores) res);
+                                //lista.add((Errores) res);
                             }
                         }
 
                     }
                     areaConsola.setText(ast.getConsola());
                     
-                    for (var i : lista) {
+                    for (var i : ast.getListaErrores()) {
                         areaConsola.append(i.toString()+"\n");
                     }
                     

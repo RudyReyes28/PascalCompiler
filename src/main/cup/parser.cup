@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Collections;
 //instrucciones
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.writeln.*;
+import com.rudyreyes.pascalcompiler.modelo.instrucciones.estructura.*;
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.variables.*;
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.arrays.*;
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.sentenciasControl.*;
@@ -67,7 +68,7 @@ terminal BREAK, CONTINUE, ARRAY, CORCHETE1, CORCHETE2;
 terminal FUNCTION, PROCEDURE, RECORD, PRANGO, PARRAY;
 
 //no terminales
-nonterminal LinkedList<Instruccion> estructura, instrucciones,cuerpo ;
+nonterminal LinkedList<Instruccion> instrucciones,cuerpo ;
 nonterminal LinkedList<Instruccion> declaracion_constantes;
 nonterminal LinkedList<Instruccion> declaraciones_tipos, declaraciones_variables;
 nonterminal Instruccion declaracion_tipo, declaracion_variables;
@@ -81,6 +82,7 @@ nonterminal Instruccion writeln, readln, asignacion_variable, sentencia_if;
 nonterminal Instruccion asignacion_array, asignacion_record, declaracion_program;
 nonterminal Instruccion sentencia_case, sentencia_while, sentencia_for, sentencia_repeat;
 nonterminal Instruccion transferencia_break, transferencia_continue;
+nonterminal Instruccion estructura_const, estructura_tipos, estructura_main, estructura_var, estructura;
 
 //funciones
 nonterminal Instruccion declaracion_funcion, declaracion_procedimiento;
@@ -111,17 +113,27 @@ precedence right UMENOS;
 
 start with cuerpo;
 
-cuerpo ::= cuerpo:a estructura:b {: RESULT = a; RESULT.addAll(b); :}
-            | estructura: a {: RESULT = new LinkedList<>();  RESULT.addAll(a);:}
+cuerpo ::= cuerpo:a estructura:b {: RESULT = a; RESULT.add(b); :}
+            | estructura: a {: RESULT = new LinkedList<>();  RESULT.add(a);:}
 ;
 
-estructura ::=  declaracion_program:a      {:RESULT = new LinkedList<>(Collections.singletonList(a)); :}
-                |TYPE declaraciones_tipos:a {: RESULT = a; :}
-                |CONST declaracion_constantes:a {: RESULT = a; :}
-                | VAR declaraciones_variables:a {: RESULT = a; :}
-                | declaracion_funcion:a {:RESULT = new LinkedList<>(Collections.singletonList(a)); :}
-                | declaracion_procedimiento:a {:RESULT = new LinkedList<>(Collections.singletonList(a)); :}
-                |BEGIN instrucciones:a  END PUNTO    {:   RESULT = a;   :}
+estructura ::=  declaracion_program:a      {:RESULT = a; :}
+                |estructura_tipos:a {: RESULT = a; :}
+                |estructura_const:a {: RESULT = a; :}
+                | estructura_var:a {: RESULT = a; :}
+                | declaracion_funcion:a {:RESULT =a; :}
+                | declaracion_procedimiento:a {:RESULT = a; :}
+                | estructura_main: a   {:   RESULT = a;   :}
+;
+
+estructura_tipos ::= TYPE declaraciones_tipos:a {: RESULT = new EstructuraTipos(a, aleft, aright) ; :}
+;
+estructura_const ::=CONST declaracion_constantes:a {: RESULT = new EstructuraConst(a, aleft, aright) ; :}
+;
+estructura_var ::= VAR declaraciones_variables:a {: RESULT = new EstructuraVar(a, aleft, aright) ; :}
+;
+
+estructura_main ::=BEGIN instrucciones:a  END PUNTO  {: RESULT = new EstructuraMain(a, aleft, aright) ; :}
 ;
 
 instrucciones ::= instrucciones:a instruccion:b     {: RESULT = a; RESULT.add(b); :}

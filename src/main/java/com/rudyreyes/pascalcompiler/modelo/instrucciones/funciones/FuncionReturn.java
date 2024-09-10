@@ -46,5 +46,13 @@ public class FuncionReturn extends Instruccion{
         
         return new FuncionReturn( new Nativo(resultado, this.tipo, linea, columna), linea, columna);
     }
-    
+    @Override
+    public String generarast(Arbol arbol, String anterior) {
+        return null;
+    }
+
+    @Override
+    public String generarActivacion(Arbol arbol, String anterior) {
+        return null;
+    }
 }

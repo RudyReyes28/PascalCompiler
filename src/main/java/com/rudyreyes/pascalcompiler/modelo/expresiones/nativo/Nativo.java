@@ -28,4 +28,14 @@ public class Nativo extends Instruccion {
         return this.valor;
     }
     
+    @Override
+    public String generarast(Arbol arbol, String anterior) {
+        return null;
+    }
+
+    @Override
+    public String generarActivacion(Arbol arbol, String anterior) {
+        return null;
+    }
+    
 }

@@ -26,4 +26,7 @@ public abstract class Instruccion {
     
     public abstract Object interpretar(Arbol arbol, TablaSimbolos tabla);
     
+    public abstract String generarast(Arbol arbol, String anterior);
+    
+    public abstract String generarActivacion(Arbol arbol, String anterior);
 }

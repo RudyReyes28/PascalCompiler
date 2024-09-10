@@ -67,4 +67,15 @@ public class AccesoVarArreglo extends Instruccion{
         return new  Errores("SEMANTICO", "La variable \" " + this.identificador+" \" no es un vector o una lista",
                     this.linea, this.columna);
     }
+    
+    
+    @Override
+    public String generarast(Arbol arbol, String anterior) {
+        return null;
+    }
+
+    @Override
+    public String generarActivacion(Arbol arbol, String anterior) {
+        return null;
+    }
 }
