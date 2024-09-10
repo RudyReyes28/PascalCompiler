@@ -73,7 +73,7 @@ nonterminal LinkedList<Instruccion> declaraciones_tipos, declaraciones_variables
 nonterminal Instruccion declaracion_tipo, declaracion_variables;
 nonterminal Tipo tipos_variable;
 nonterminal String tipos_dato_var;
-nonterminal Instruccion instruccion, instruccion_fin;
+nonterminal Instruccion instruccion, instruccion_fin, instruccion_else_fin;
 nonterminal Instruccion expresion, expresionAritmetica, expresionRelacional, expresionLogica;
 nonterminal LinkedList<Instruccion> expresion_conca;
 nonterminal LinkedList<String> listado_id;
@@ -134,11 +134,11 @@ instruccion ::= writeln:a       FINCADENA            {: RESULT= a; :}
                 | asignacion_array:a  FINCADENA   {: RESULT= a; :}
                 | asignacion_record:a FINCADENA   {: RESULT= a; :}
                 | llamada_metodo:a FINCADENA        {: RESULT= a; :}
-                | sentencia_if :a                    {: RESULT= a; :}
-                | sentencia_case : a                {: RESULT= a; :}
-                | sentencia_while:a                 {: RESULT =a; :}
-                | sentencia_for:a                 {: RESULT =a; :}
-                | sentencia_repeat:a                 {: RESULT =a; :}
+                | sentencia_if :a    FINCADENA                {: RESULT= a; :}
+                | sentencia_case : a FINCADENA               {: RESULT= a; :}
+                | sentencia_while:a  FINCADENA               {: RESULT =a; :}
+                | sentencia_for:a FINCADENA                {: RESULT =a; :}
+                | sentencia_repeat:a FINCADENA                {: RESULT =a; :}
                 | transferencia_break:a   FINCADENA     {: RESULT= a; :}
                 | transferencia_continue:a FINCADENA    {: RESULT= a; :}
                 | error FINCADENA
@@ -146,19 +146,32 @@ instruccion ::= writeln:a       FINCADENA            {: RESULT= a; :}
 ;
 
 instruccion_fin ::= writeln:a                   {: RESULT= a; :}
-                | asignacion_variable:a         {: RESULT= a; :}
-//                | sentencia_if :a               {: RESULT= a; :}
+                | readln:a                 {: RESULT= a; :}
+                | asignacion_variable:a     {: RESULT= a; :}
                 | asignacion_array:a     {: RESULT= a; :}
-//                | sentencia_if :a                    {: RESULT= a; :}
-//                | sentencia_ifelse:a                 {: RESULT= a; :}
-//                | sentencias_ifs:a                  {: RESULT= a; :}
-//                | sentencia_case : a                {: RESULT= a; :}
-//                | sentencia_while:a                 {: RESULT =a; :}
-//                | sentencia_for:a                 {: RESULT =a; :}
-//                | sentencia_repeat:a                 {: RESULT =a; :}
-//                | transferencia_break:a          {: RESULT= a; :}
-//                | transferencia_continue:a      {: RESULT= a; :}
-//                | sentencia_ifelse:a            {: RESULT= a; :}
+                | asignacion_record:a    {: RESULT= a; :}
+                | llamada_metodo:a         {: RESULT= a; :}
+                | sentencia_if :a                    {: RESULT= a; :}
+                | sentencia_case : a                {: RESULT= a; :}
+                | sentencia_while:a                 {: RESULT =a; :}
+                | sentencia_for:a                 {: RESULT =a; :}
+                | sentencia_repeat:a                 {: RESULT =a; :}
+                | transferencia_break:a        {: RESULT= a; :}
+                | transferencia_continue:a     {: RESULT= a; :}
+;
+
+instruccion_else_fin ::= writeln:a                   {: RESULT= a; :}
+                | readln:a                 {: RESULT= a; :}
+                | asignacion_variable:a     {: RESULT= a; :}
+                | asignacion_array:a     {: RESULT= a; :}
+                | asignacion_record:a    {: RESULT= a; :}
+                | llamada_metodo:a         {: RESULT= a; :}
+                | sentencia_case : a                {: RESULT= a; :}
+                | sentencia_while:a                 {: RESULT =a; :}
+                | sentencia_for:a                 {: RESULT =a; :}
+                | sentencia_repeat:a                 {: RESULT =a; :}
+                | transferencia_break:a        {: RESULT= a; :}
+                | transferencia_continue:a     {: RESULT= a; :}
 ;
 
 declaracion_program ::= PROGRAM ID:a FINCADENA {:RESULT = new Program(a, aleft, aright);:}
@@ -393,25 +406,25 @@ asignacion_record ::= ID:a PUNTO ID:b DOSPUNTOS IGUAL expresion:c {:   RESULT=ne
 //                | sentencia_ifelse:a {:RESULT = a; :} %prec IFELSE
 //;
 
-sentencia_if ::= IF expresion:a  THEN instruccion:b {:  RESULT = new SentenciaIf(a, new LinkedList<>(Collections.singletonList(b)), aleft, aright);:}
-                |IF expresion:a THEN BEGIN instrucciones:b END FINCADENA {:   RESULT = new SentenciaIf(a, b, aleft, aright);   :}
-                |IF  expresion:a THEN BEGIN instrucciones:b END ELSE  instruccion:c {:   RESULT = new SentenciaIfElse(a, b,new LinkedList<>(Collections.singletonList(c)) , aleft, aright);   :}
-                | IF expresion:a THEN instruccion_fin:b ELSE instruccion:c {:  RESULT = new SentenciaIfElse(a, new LinkedList<>(Collections.singletonList(b)), new LinkedList<>(Collections.singletonList(c)), aleft, aright);:} 
-                |IF expresion:a THEN instruccion_fin:b ELSE BEGIN instrucciones:c END FINCADENA {:   RESULT = new SentenciaIfElse(a, new LinkedList<>(Collections.singletonList(b)),c , aleft, aright);   :}
-                |IF expresion:a THEN BEGIN instrucciones:b END ELSE BEGIN instrucciones:c END FINCADENA {:   RESULT = new SentenciaIfElse(a, b,c , aleft, aright);   :}
-//                |IF expresion:a THEN instruccion_fin:b ELSE sentencia_if:c {:   RESULT = new SentenciaIfElseIf(a, new LinkedList<>(Collections.singletonList(b)),c , aleft, aright);   :}
-//                |IF expresion:a THEN BEGIN instrucciones:b END ELSE sentencia_if:c {:   RESULT = new SentenciaIfElseIf(a, b,c , aleft, aright);   :}
+sentencia_if ::= IF expresion:a  THEN instruccion_fin:b {:  RESULT = new SentenciaIf(a, new LinkedList<>(Collections.singletonList(b)), aleft, aright);:}
+                |IF expresion:a THEN BEGIN instrucciones:b END  {:   RESULT = new SentenciaIf(a, b, aleft, aright);   :}
+                |IF  expresion:a THEN BEGIN instrucciones:b END ELSE  instruccion_else_fin:c {:   RESULT = new SentenciaIfElse(a, b,new LinkedList<>(Collections.singletonList(c)) , aleft, aright);   :}
+                | IF expresion:a THEN instruccion_fin:b ELSE instruccion_else_fin:c {:  RESULT = new SentenciaIfElse(a, new LinkedList<>(Collections.singletonList(b)), new LinkedList<>(Collections.singletonList(c)), aleft, aright);:} 
+                |IF expresion:a THEN instruccion_fin:b ELSE BEGIN instrucciones:c END  {:   RESULT = new SentenciaIfElse(a, new LinkedList<>(Collections.singletonList(b)),c , aleft, aright);   :}
+                |IF expresion:a THEN BEGIN instrucciones:b END ELSE BEGIN instrucciones:c END  {:   RESULT = new SentenciaIfElse(a, b,c , aleft, aright);   :}
+                |IF expresion:a THEN instruccion_fin:b ELSE sentencia_if:c {:   RESULT = new SentenciaIfElseIf(a, new LinkedList<>(Collections.singletonList(b)),c , aleft, aright);   :}
+                |IF expresion:a THEN BEGIN instrucciones:b END ELSE sentencia_if:c {:   RESULT = new SentenciaIfElseIf(a, b,c , aleft, aright);   :}
                 
 ;
 
 
 
-sentencia_case ::= CASE  expresion:a  OF casos_case:b ELSE BEGIN instrucciones:c  END FINCADENA {:
+sentencia_case ::= CASE  expresion:a  OF casos_case:b ELSE BEGIN instrucciones:c  END FINCADENA END  {:
                         RESULT = new SentenciaCase(a, b, c, aleft, aright);
                     :}
 
 
-                  | CASE expresion:a OF casos_case:b ELSE  instruccion:c  END FINCADENA {:
+                  | CASE expresion:a OF casos_case:b ELSE  instruccion:c  END  {:
                         RESULT = new SentenciaCase(a, b, new LinkedList<>(Collections.singletonList(c)), aleft, aright);
                     :}
 
@@ -431,22 +444,22 @@ expresiones_case ::= expresiones_case:a COMA expresion:b {:RESULT = a; RESULT.ad
 
 ;
 
-sentencia_while ::= WHILE expresion:a  DO BEGIN instrucciones:b END FINCADENA  {:   RESULT = new SentenciaWhile(a, b, aleft, aright);   :}
-                | WHILE  expresion:a  DO instruccion:b  {:   RESULT = new SentenciaWhile(a,new LinkedList<>(Collections.singletonList(b)), aleft, aright);   :}
+sentencia_while ::= WHILE expresion:a  DO BEGIN instrucciones:b END  {:   RESULT = new SentenciaWhile(a, b, aleft, aright);   :}
+                | WHILE  expresion:a  DO instruccion_fin:b  {:   RESULT = new SentenciaWhile(a,new LinkedList<>(Collections.singletonList(b)), aleft, aright);   :}
 ;
 
-sentencia_for ::= FOR ID:a DOSPUNTOS IGUAL expresion:b TO expresion:c DO instruccion:d     
+sentencia_for ::= FOR ID:a DOSPUNTOS IGUAL expresion:b TO expresion:c DO instruccion_fin:d     
                 {:RESULT = new SentenciaFor(new AsignacionVariable(a, b, aleft, aright), c, new AccesoVariable(a, aleft, aright) , new LinkedList<>(Collections.singletonList(d)),new AsignacionVariable(a, new OperacionSuma(new AccesoVariable(a, aleft, aright), new Nativo(1, new Tipo("integer",TipoDato.INTEGER), aleft, aright) , aleft, aright), aleft, aright),aleft, aright);   :}
 
 
-                |FOR ID:a DOSPUNTOS IGUAL expresion:b TO expresion:c DO BEGIN instrucciones:d END FINCADENA    
+                |FOR ID:a DOSPUNTOS IGUAL expresion:b TO expresion:c DO BEGIN instrucciones:d END     
                 {:  		   RESULT = new SentenciaFor(new AsignacionVariable(a, b, aleft, aright), c, new AccesoVariable(a, aleft, aright) , d,new AsignacionVariable(a, new OperacionSuma(new AccesoVariable(a, aleft, aright), new Nativo(1, new Tipo("integer",TipoDato.INTEGER), aleft, aright) , aleft, aright), aleft, aright),aleft, aright);   
                  :}
 
 
 ;
 
-sentencia_repeat ::= REPEAT  instrucciones:b  UNTIL expresion:a  FINCADENA {:   RESULT = new SentenciaRepeat(a, b, aleft, aright);   :}
+sentencia_repeat ::= REPEAT  instrucciones:b  UNTIL expresion:a   {:   RESULT = new SentenciaRepeat(a, b, aleft, aright);   :}
 
 ;
 
@@ -461,7 +474,6 @@ expresion ::=  expresionAritmetica:a        {: RESULT = a; :}
             | expresionRelacional: a        {: RESULT = a; :}
             | expresionLogica:a             {: RESULT = a; :}
             | llamada_funcion :a            {: RESULT= a; :}
-//            | acceso_record:a               {: RESULT= a; :}
             | ENTERO:a                      {:   RESULT = new Nativo(Integer.parseInt(a), new Tipo("integer",TipoDato.INTEGER), aleft, aright );   :}
             | DECIMAL:a                     {:   RESULT = new Nativo(new Double(a), new Tipo("real",TipoDato.REAL), aleft, aright );   :}
             | CADENA:a                      {:   RESULT = new Nativo(a, new Tipo("string",TipoDato.CADENA), aleft, aright );   :}
@@ -473,23 +485,7 @@ expresion ::=  expresionAritmetica:a        {: RESULT = a; :}
             
 ;
 
-//expresion_array ::=  expresionAritmetica:a        {: RESULT = a; :}
-//            | expresionRelacional: a        {: RESULT = a; :}
-//            | expresionLogica:a             {: RESULT = a; :}
- //           | llamada_funcion :a            {: RESULT= a; :}
- //           | acceso_record:a               {: RESULT= a; :}
-//            | ENTERO:a                      {:   RESULT = new Nativo(Integer.parseInt(a), new Tipo("integer",TipoDato.INTEGER), aleft, aright );   :}
-//            | DECIMAL:a                     {:   RESULT = new Nativo(new Double(a), new Tipo("real",TipoDato.REAL), aleft, aright );   :}
-//            | CADENA:a                      {:   RESULT = new Nativo(a, new Tipo("string",TipoDato.CADENA), aleft, aright );   :}
- //           | CARACTER:a                    {:   RESULT = new Nativo(a, new Tipo("char",TipoDato.CARACTER), aleft, aright );   :}
- //           | BOOLEAN:a                     {:   RESULT = new Nativo(Boolean.parseBoolean(a), new Tipo("boolean",TipoDato.BOOLEANO), aleft, aright );   :}
- //           | ID:a                          {:   RESULT = new AccesoVariable(a, aleft, aright);   :}
-//            | ID:a CORCHETE1 expresion:b CORCHETE2 {: RESULT = new AccesoVarArreglo(a, b, aleft, aright );:}
-//            
-//;
 
-//acceso_record ::= ID:a PUNTO ID:b {: RESULT = new AccesoVarRecord(a, b, aleft, aright); :}
-//;
 
 expresionAritmetica ::= MENOS expresion:a             {:   RESULT = new OperacionNegacionU(a, aleft, aright);   :} %prec UMENOS
             | expresion:a MAS expresion:b           {:   RESULT = new OperacionSuma(a, b, aleft, aright);   :}

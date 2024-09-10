@@ -6,6 +6,7 @@ package com.rudyreyes.pascalcompiler.modelo.instrucciones.ciclos;
 
 import com.rudyreyes.pascalcompiler.modelo.abstracto.Instruccion;
 import com.rudyreyes.pascalcompiler.modelo.errores.Errores;
+import com.rudyreyes.pascalcompiler.modelo.instrucciones.funciones.FuncionReturn;
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.sentenciaTransferencia.SentenciaBreak;
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.sentenciaTransferencia.SentenciaContinue;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.Arbol;
@@ -80,13 +81,13 @@ public class SentenciaFor extends Instruccion{
                     break;
                 }
                 
-                /*if (i instanceof FuncionReturn) {
+                if (i instanceof FuncionReturn) {
                     var res = i.interpretar(arbol, newTabla2);
                     if (res instanceof Errores) {
                         return res;
                     }
                     return res;
-                }*/
+                }
                 
                 if(i == null){
                     continue;
@@ -101,9 +102,9 @@ public class SentenciaFor extends Instruccion{
                     break;
                 }
                 
-                /*if(resIns instanceof FuncionReturn){
+                if(resIns instanceof FuncionReturn){
                     return resIns;
-                }*/
+                }
                 
                 if (resIns instanceof Errores) {
                     return resIns;
