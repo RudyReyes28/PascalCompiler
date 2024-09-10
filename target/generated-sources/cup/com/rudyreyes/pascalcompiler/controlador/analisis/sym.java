@@ -8,69 +8,73 @@ package com.rudyreyes.pascalcompiler.controlador.analisis;
 /** CUP generated interface containing symbol constants. */
 public interface sym {
   /* terminals */
-  public static final int PAR2 = 23;
-  public static final int DOSPUNTOS = 13;
-  public static final int PAR1 = 22;
-  public static final int FUNCTION = 60;
-  public static final int MULT = 27;
-  public static final int CONST = 12;
-  public static final int CHAR = 21;
+  public static final int PAR2 = 25;
+  public static final int DOSPUNTOS = 15;
+  public static final int PAR1 = 24;
+  public static final int FUNCTION = 62;
+  public static final int MULT = 29;
+  public static final int CONST = 14;
+  public static final int CHAR = 23;
   public static final int IMPRIMIR = 7;
   public static final int ENTERO = 3;
-  public static final int CASE = 47;
-  public static final int DIFERENTE = 31;
-  public static final int INTEGER = 16;
-  public static final int CONTINUE = 56;
-  public static final int REPEAT = 53;
-  public static final int ARRAY = 57;
-  public static final int FOR = 51;
-  public static final int AND = 38;
-  public static final int NOT = 37;
+  public static final int CASE = 49;
+  public static final int DIFERENTE = 33;
+  public static final int INTEGER = 18;
+  public static final int CONTINUE = 58;
+  public static final int REPEAT = 55;
+  public static final int ARRAY = 59;
+  public static final int FOR = 53;
+  public static final int AND = 40;
+  public static final int NOT = 39;
+  public static final int MENORIGUAL = 35;
   public static final int FINCADENA = 6;
-  public static final int MENORIGUAL = 33;
-  public static final int IGUAL = 36;
-  public static final int RECORD = 62;
-  public static final int CARACTER = 45;
-  public static final int TYPE = 15;
-  public static final int CORCHETE2 = 59;
-  public static final int OR = 41;
-  public static final int CORCHETE1 = 58;
-  public static final int ORE = 43;
-  public static final int BOOL = 19;
-  public static final int DIV = 28;
-  public static final int BEGIN = 8;
-  public static final int UNTIL = 54;
-  public static final int IF = 46;
-  public static final int UMENOS = 26;
+  public static final int IGUAL = 38;
+  public static final int RECORD = 64;
+  public static final int CARACTER = 47;
+  public static final int TYPE = 17;
+  public static final int CORCHETE2 = 61;
+  public static final int OR = 43;
+  public static final int CORCHETE1 = 60;
+  public static final int ORE = 45;
+  public static final int BOOL = 21;
+  public static final int DIV = 30;
+  public static final int BEGIN = 10;
+  public static final int UNTIL = 56;
+  public static final int IF = 48;
+  public static final int UMENOS = 28;
   public static final int ID = 5;
-  public static final int OF = 48;
-  public static final int MAYORIGUAL = 35;
-  public static final int BOOLEAN = 44;
+  public static final int OF = 50;
+  public static final int MAYORIGUAL = 37;
+  public static final int BOOLEAN = 46;
   public static final int EOF = 0;
   public static final int DECIMAL = 4;
+  public static final int PRANGO = 65;
+  public static final int PARRAY = 66;
   public static final int error = 1;
-  public static final int COMA = 14;
+  public static final int PROGRAM = 9;
+  public static final int COMA = 16;
   public static final int CADENA = 2;
-  public static final int MENOS = 25;
-  public static final int ANDT = 42;
-  public static final int MENOR = 32;
-  public static final int MOD = 30;
-  public static final int BREAK = 55;
-  public static final int VOID = 18;
-  public static final int REAL = 17;
-  public static final int MAYOR = 34;
-  public static final int DIVE = 29;
-  public static final int ELSE = 40;
-  public static final int PUNTO = 10;
-  public static final int TO = 52;
-  public static final int WHILE = 49;
-  public static final int THEN = 39;
-  public static final int END = 9;
-  public static final int STRING = 20;
-  public static final int PROCEDURE = 61;
-  public static final int VAR = 11;
-  public static final int DO = 50;
-  public static final int MAS = 24;
+  public static final int MENOS = 27;
+  public static final int ANDT = 44;
+  public static final int MENOR = 34;
+  public static final int MOD = 32;
+  public static final int BREAK = 57;
+  public static final int VOID = 20;
+  public static final int READLN = 8;
+  public static final int MAYOR = 36;
+  public static final int REAL = 19;
+  public static final int DIVE = 31;
+  public static final int ELSE = 42;
+  public static final int PUNTO = 12;
+  public static final int TO = 54;
+  public static final int WHILE = 51;
+  public static final int THEN = 41;
+  public static final int END = 11;
+  public static final int STRING = 22;
+  public static final int PROCEDURE = 63;
+  public static final int VAR = 13;
+  public static final int DO = 52;
+  public static final int MAS = 26;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -80,6 +84,8 @@ public interface sym {
   "ID",
   "FINCADENA",
   "IMPRIMIR",
+  "READLN",
+  "PROGRAM",
   "BEGIN",
   "END",
   "PUNTO",
@@ -134,7 +140,9 @@ public interface sym {
   "CORCHETE2",
   "FUNCTION",
   "PROCEDURE",
-  "RECORD"
+  "RECORD",
+  "PRANGO",
+  "PARRAY"
   };
 }
 

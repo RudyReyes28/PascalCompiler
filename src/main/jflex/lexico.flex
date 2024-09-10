@@ -45,6 +45,8 @@ DOSPUNTOS = ":"
 CORCHETE1 = "["
 CORCHETE2 = "]"
 COMA = ","
+PRANGO = "..."
+PARRAY = ".."
 PUNTO = "."
 
 //simbolos de op relacionales
@@ -80,7 +82,9 @@ COMENTARIO = ([{](.*)[}])
 COMENTARIOMULTI = "(*"([^*]|\*[^/])*"\*)"
 
 //palabras reservadas
+PROGRAM = "program"
 IMPRIMIR="writeln"
+READLN = "readln"
 BEGIN = "begin"
 END = "end"
 VAR = "var"
@@ -110,7 +114,9 @@ BOOL = "boolean"
 
 %%
 
+<YYINITIAL> {PROGRAM}  {return new Symbol(sym.PROGRAM, yyline, yycolumn,yytext());}
 <YYINITIAL> {IMPRIMIR}  {return new Symbol(sym.IMPRIMIR, yyline, yycolumn,yytext());}
+<YYINITIAL> {READLN}  {return new Symbol(sym.READLN, yyline, yycolumn,yytext());}
 <YYINITIAL> {BEGIN}           {return new Symbol(sym.BEGIN, yyline, yycolumn,yytext());}
 <YYINITIAL> {END}           {return new Symbol(sym.END, yyline, yycolumn,yytext());}
 <YYINITIAL> {VAR}           {return new Symbol(sym.VAR, yyline, yycolumn,yytext());}
@@ -175,6 +181,8 @@ BOOL = "boolean"
 <YYINITIAL> {COMENTARIOMULTI} {}
 
 <YYINITIAL> {FINCADENA}     {return new Symbol(sym.FINCADENA, yyline, yycolumn,yytext());}
+<YYINITIAL> {PRANGO}        {return new Symbol(sym.PRANGO, yyline, yycolumn,yytext());}
+<YYINITIAL> {PARRAY}        {return new Symbol(sym.PARRAY, yyline, yycolumn,yytext());}
 <YYINITIAL> {PUNTO}        {return new Symbol(sym.PUNTO, yyline, yycolumn,yytext());}
 <YYINITIAL> {DOSPUNTOS}        {return new Symbol(sym.DOSPUNTOS, yyline, yycolumn,yytext());}
 <YYINITIAL> {COMA}        {return new Symbol(sym.COMA, yyline, yycolumn,yytext());}
