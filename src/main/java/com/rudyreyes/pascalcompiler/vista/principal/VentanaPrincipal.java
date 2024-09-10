@@ -11,8 +11,10 @@ import com.rudyreyes.pascalcompiler.modelo.errores.Errores;
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.funciones.DeclaracionFuncion;
 import com.rudyreyes.pascalcompiler.modelo.instrucciones.tipos.DeclaracionTipoRecord;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.Arbol;
+import com.rudyreyes.pascalcompiler.modelo.simbolo.EntornoSimbolos;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.TablaSimbolos;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.TablaTipos;
+import com.rudyreyes.pascalcompiler.modelo.simbolo.Tipo;
 import com.rudyreyes.pascalcompiler.vista.util.NumeroDeLinea;
 import java.awt.Component;
 import java.awt.Font;
@@ -28,6 +30,7 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.LinkedList;
+import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -40,7 +43,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * @author rudyo
  */
 public class VentanaPrincipal extends javax.swing.JFrame {
-
+        private List<Tipo> listaTipos ;
+        private List<EntornoSimbolos> listaSimbolos;
+        private String instAST;
     /**
      * Creates new form VentanaPrincipal
      */
@@ -79,6 +84,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         btnAbrirArchivo = new javax.swing.JButton();
         btnNuevaPestania = new javax.swing.JButton();
         btnEjecutar = new javax.swing.JButton();
+        btnReportes = new javax.swing.JButton();
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -125,6 +131,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             }
         });
 
+        btnReportes.setText("Reportes");
+        btnReportes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReportesActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -139,6 +152,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                         .addComponent(btnNuevaPestania)
                         .addGap(18, 18, 18)
                         .addComponent(btnEjecutar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnReportes)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -159,7 +174,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAbrirArchivo)
                     .addComponent(btnNuevaPestania)
-                    .addComponent(btnEjecutar))
+                    .addComponent(btnEjecutar)
+                    .addComponent(btnReportes))
                 .addGap(15, 15, 15)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -370,8 +386,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                         areaConsola.append(i.toString()+"\n");
                     }
                     
-                    areaConsola.append(tablaTipos.mostrarSimbolosTablaActual());
-                    areaConsola.append(tabla.mostrarTodosLosSimbolos());
+                    //areaConsola.append(tablaTipos.mostrarSimbolosTablaActual());
+                   // areaConsola.append(tabla.mostrarTodosLosSimbolos());
+                    
+                    listaSimbolos =ast.getTodosLosSimbolos();
+                    listaTipos = ast.getTablaTipos().getSimbolosTablaActual();
                 }
                 } catch (Exception ex) {
                 //areaConsola.setText("Algo salio mal: "+ex);
@@ -387,6 +406,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             areaConsola.setText("No hay pestañas abiertas");
         }
     }//GEN-LAST:event_btnEjecutarActionPerformed
+
+    private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
+        // TODO add your handling code here:
+        // TODO add your handling code here:
+        VentanaReportes ventanaR = new VentanaReportes(this, true, listaTipos, listaSimbolos, instAST);
+        ventanaR.setVisible(true);
+    }//GEN-LAST:event_btnReportesActionPerformed
 
     
         /**
@@ -430,6 +456,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton btnAbrirArchivo;
     private javax.swing.JButton btnEjecutar;
     private javax.swing.JButton btnNuevaPestania;
+    private javax.swing.JButton btnReportes;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

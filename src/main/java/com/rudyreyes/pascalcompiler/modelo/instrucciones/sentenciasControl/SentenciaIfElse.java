@@ -117,9 +117,9 @@ public class SentenciaIfElse extends Instruccion {
                     return resultado;
                 }
                 
-                /*if(resultado instanceof FuncionReturn){
+                if(resultado instanceof FuncionReturn){
                     return resultado;
-                }*/
+                }
                 
                 if (resultado instanceof Errores) {
                     return resultado;

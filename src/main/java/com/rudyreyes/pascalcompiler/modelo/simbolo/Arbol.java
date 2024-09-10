@@ -69,9 +69,6 @@ public class Arbol {
         this.tablaTipos = tablaTipos;
     }
 
-    
-    
-    
 
     public LinkedList<Errores> getErrores() {
         return errores;
@@ -85,7 +82,7 @@ public class Arbol {
         this.tablasEntornos.add(tabla);
     }
     
-    /*public List<EntornoSimbolos> getTodosLosSimbolos() {
+    public List<EntornoSimbolos> getTodosLosSimbolos() {
         List<EntornoSimbolos> todosLosSimbolos = new ArrayList<>();
 
         for (TablaSimbolos tabla : tablasEntornos) {
@@ -100,9 +97,9 @@ public class Arbol {
         todosLosSimbolos.add(entornoGlobal);
 
         return todosLosSimbolos;
-    }*/
+    }
 
-    /*public void mostrarTodosLosSimbolos() {
+    public void mostrarTodosLosSimbolos() {
     List<EntornoSimbolos> todosLosSimbolos = getTodosLosSimbolos();
     for (EntornoSimbolos entornoSimbolos : todosLosSimbolos) {
         System.out.println("Entorno: " + entornoSimbolos.getNombreEntorno());
@@ -110,7 +107,7 @@ public class Arbol {
             System.out.println(simbolo.imprimirSimbolo());
         }
     }
-}*/
+}
     
     
     public void writeln(String valor){
