@@ -16,17 +16,5 @@ n3 ->n4;
 n5;
 n5[label = "Factorial"];
 n4 ->n5;
-n6;
-n6[label = "Factorial"];
-n5 ->n6;
-n7;
-n7[label = "Factorial"];
-n6 ->n7;
-n8;
-n8[label = "Factorial"];
-n7 ->n8;
-n9;
-n9[label = "Factorial"];
-n8 ->n9;
 
 }

@@ -55,6 +55,6 @@ public class Errores {
 
     @Override
     public String toString() {
-        return "Error{" + "tipo=" + tipo + ", descripcion=" + descripcion + ", linea=" + linea + ", columna=" + columna + '}';
+        return "Error ->" + "Tipo: " + tipo + ", Descipcion: " + descripcion + ", linea: " + linea + ", columna: " + columna;
     }
 }

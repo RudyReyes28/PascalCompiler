@@ -4,6 +4,8 @@
  */
 package com.rudyreyes.pascalcompiler.vista.principal;
 
+import com.rudyreyes.pascalcompiler.modelo.abstracto.Instruccion;
+import com.rudyreyes.pascalcompiler.modelo.instrucciones.funciones.DeclaracionFuncion;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.Arbol;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.EntornoSimbolos;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.Simbolo;
@@ -166,7 +168,7 @@ public class VentanaReportes extends javax.swing.JDialog {
 
     private void btnSimbolosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimbolosActionPerformed
         // TODO add your handling code here:
-         String[] columnas = {"#","Nombre", "Categoria","Tipo de Dato", "Tipo Base", "Entorno", "Línea", "Columna"};
+         String[] columnas = {"#","Nombre", "Categoria","Tipo de Dato", "Tipo Base", "Num Param", "List Param", "Entorno", "Línea", "Columna"};
         DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
         
         tablaReportes.setModel(modelo);
@@ -193,6 +195,8 @@ public class VentanaReportes extends javax.swing.JDialog {
                         simbolo.isMutable() ? "variable" : "constante",
                         simbolo.getTipo().getNombreEstructura(),
                         simbolo.getTipo().getTipo(),
+                        "",
+                        "",
                         entornoSimbolos.getNombreEntorno(),
                         simbolo.getLinea(),
                         simbolo.getColumna()
@@ -203,6 +207,33 @@ public class VentanaReportes extends javax.swing.JDialog {
 
             }
         }
+        
+        LinkedList<Instruccion> funciones = ast.getFunciones();
+        for (Instruccion funcion : funciones) {
+            //System.out.println("Entorno: " + entornoSimbolos.getNombreEntorno());
+                    DeclaracionFuncion fun = (DeclaracionFuncion) funcion;
+
+
+                    
+                    modelo.addRow(new Object[]{
+                        contador,
+                        fun.nombreFuncion,
+                        "fun",
+                        "funcion",
+                        fun.tipoDato,
+                        fun.parametros.size(),
+                        "",
+                        0,
+                        fun.linea,
+                        fun.columna
+                    });
+
+                    contador++;
+                
+
+            
+        }
+        
     }//GEN-LAST:event_btnSimbolosActionPerformed
 
     private void btnTiposActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTiposActionPerformed
