@@ -71,11 +71,11 @@
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="btnSimbolos" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="67" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="54" max="-2" attributes="0"/>
                           <Component id="btnTipos" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="btnAst" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
                           <Component id="btnActivacion" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="112" max="-2" attributes="0"/>
                       </Group>
@@ -123,6 +123,9 @@
             </Property>
             <Property name="text" type="java.lang.String" value="Arbol de Activaciones"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnActivacionActionPerformed"/>
+          </Events>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane1">
           <Properties>

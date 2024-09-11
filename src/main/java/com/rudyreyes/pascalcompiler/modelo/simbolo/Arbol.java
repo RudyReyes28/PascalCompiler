@@ -28,6 +28,7 @@ public class Arbol {
     private LinkedList<Object> listaErrores;
     public int contador;
     public int contadorAct;
+    public String arbolAct;
 
     public Arbol(LinkedList<Instruccion> instrucciones) {
         this.instrucciones = instrucciones;
@@ -38,6 +39,7 @@ public class Arbol {
         this.funciones = new LinkedList<>();
         this.structs = new LinkedList<>();
         this.listaErrores = new LinkedList<>();
+        arbolAct = "n0;\n  n0[label = \"Activaciones\"];\n";
     }
 
     public LinkedList<Instruccion> getInstrucciones() {
@@ -233,5 +235,9 @@ public class Arbol {
         this.contadorAct++;
         return this.contadorAct;
 
+    }
+    
+    public void agregarActivaciones(String activacion){
+        this.arbolAct+=activacion;
     }
 }

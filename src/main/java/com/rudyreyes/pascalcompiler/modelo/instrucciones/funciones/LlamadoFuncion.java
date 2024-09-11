@@ -85,7 +85,7 @@ public class LlamadoFuncion extends Instruccion{
                 variable.setValor(valorInterpretado);
                 
             }
-            
+            generarAct(arbol);
             var resultadoFuncion = metodo.interpretar(arbol, newTabla);
             if(resultadoFuncion instanceof FuncionReturn){
                 
@@ -132,5 +132,17 @@ public class LlamadoFuncion extends Instruccion{
     @Override
     public String generarActivacion(Arbol arbol, String anterior) {
         return null;
+    }
+    
+    
+    private void generarAct(Arbol arbol){
+        int nAnterior = arbol.getContadorAct()-1;
+        String n = "n"+(nAnterior+1);
+        String re = n+"[label = \""+this.id+"\"];\n";
+        String conca = "n"+nAnterior +" ->"+n+";\n";
+        String armar = n+";\n"+re+conca;
+        arbol.agregarActivaciones(armar);
+        // n2 [ label = "hola"]
+        
     }
 }

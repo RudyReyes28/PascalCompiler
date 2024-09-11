@@ -147,6 +147,6 @@ public class MayorQue extends Instruccion{
 
     @Override
     public String generarActivacion(Arbol arbol, String anterior) {
-        return null;
+        return "";
     }
 }

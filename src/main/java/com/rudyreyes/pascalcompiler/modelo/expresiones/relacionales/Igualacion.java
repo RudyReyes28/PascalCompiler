@@ -142,6 +142,6 @@ public class Igualacion extends Instruccion {
 
     @Override
     public String generarActivacion(Arbol arbol, String anterior) {
-        return null;
+        return "";
     }
 }

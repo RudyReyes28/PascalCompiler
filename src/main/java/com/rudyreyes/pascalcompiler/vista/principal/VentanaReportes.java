@@ -87,6 +87,11 @@ public class VentanaReportes extends javax.swing.JDialog {
 
         btnActivacion.setFont(new java.awt.Font("Comic Sans MS", 1, 14)); // NOI18N
         btnActivacion.setText("Arbol de Activaciones");
+        btnActivacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActivacionActionPerformed(evt);
+            }
+        });
 
         jScrollPane1.setFont(new java.awt.Font("Comic Sans MS", 0, 12)); // NOI18N
 
@@ -136,11 +141,11 @@ public class VentanaReportes extends javax.swing.JDialog {
                         .addContainerGap(60, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnSimbolos)
-                        .addGap(67, 67, 67)
+                        .addGap(54, 54, 54)
                         .addComponent(btnTipos)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnAst)
-                        .addGap(41, 41, 41)
+                        .addGap(48, 48, 48)
                         .addComponent(btnActivacion)
                         .addGap(112, 112, 112))))
         );
@@ -161,7 +166,7 @@ public class VentanaReportes extends javax.swing.JDialog {
 
     private void btnSimbolosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimbolosActionPerformed
         // TODO add your handling code here:
-         String[] columnas = {"#","Nombre", "Categoria","Tipo de Dato", "Tipo Base", "Entorno" ,"Valor", "Línea", "Columna"};
+         String[] columnas = {"#","Nombre", "Categoria","Tipo de Dato", "Tipo Base", "Entorno", "Línea", "Columna"};
         DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
         
         tablaReportes.setModel(modelo);
@@ -189,7 +194,6 @@ public class VentanaReportes extends javax.swing.JDialog {
                         simbolo.getTipo().getNombreEstructura(),
                         simbolo.getTipo().getTipo(),
                         entornoSimbolos.getNombreEntorno(),
-                        this.obtenerValor(simbolo.getValor(),simbolo.getTipo().getTipo()),
                         simbolo.getLinea(),
                         simbolo.getColumna()
                     });
@@ -254,6 +258,31 @@ public class VentanaReportes extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(null, "No se pudo generar el ast");
         }
     }//GEN-LAST:event_btnAstActionPerformed
+
+    private void btnActivacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivacionActionPerformed
+        // TODO add your handling code here:
+        String cadena = "digraph ast{\n";
+        cadena += ast.arbolAct;
+        cadena += "\n}";
+        instAST = cadena;
+        if (instAST != null) {
+            String dotFilePath = "activacion.dot";
+            String outputFormat = "activacion.png";
+            generarArchivoDOT(dotFilePath);
+            generarImagenAST(dotFilePath, outputFormat);
+            try {
+                String imagePath;
+                File imageFile = new File(outputFormat);
+                Desktop desktop = Desktop.getDesktop();
+                desktop.open(imageFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "No se pudo generar el ast");
+        }
+        
+    }//GEN-LAST:event_btnActivacionActionPerformed
 
     
     public  void generarArchivoDOT(String dotFilePath) {
