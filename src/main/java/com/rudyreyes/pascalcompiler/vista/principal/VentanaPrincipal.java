@@ -233,7 +233,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
                                 try {
 
-                                    String rutaCompleta = "archivosJC" + File.separator + nombrePestana; // Construir la ruta completa del archivo
+                                    String rutaCompleta = "archivosPas" + File.separator + nombrePestana; // Construir la ruta completa del archivo
 
                                     BufferedWriter writer = new BufferedWriter(new FileWriter(rutaCompleta));
                                     writer.write(textoContenido);
@@ -383,6 +383,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
                     }
                     //areaConsola.setText(ast.getConsola());
+                    areaConsola.setText("");
                     if(!ast.getListaErrores().isEmpty()){
                         for (var i : ast.getListaErrores()) {
                         areaConsola.append(i.toString()+"\n");
