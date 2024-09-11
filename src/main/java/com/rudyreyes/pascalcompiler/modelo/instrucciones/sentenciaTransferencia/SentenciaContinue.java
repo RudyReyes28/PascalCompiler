@@ -27,7 +27,16 @@ public class SentenciaContinue extends Instruccion{
     
     @Override
     public String generarast(Arbol arbol, String anterior) {
-        return null;
+        String bre = "n" + arbol.getContador();
+        String dosP = "n" + arbol.getContador();
+        
+        String resultado = anterior+" ->"+bre+";\n"; 
+         resultado += anterior+" ->"+dosP+";\n"; 
+        
+        resultado += bre + "[label=\"continue\"];\n";
+        resultado += dosP + "[label=\";\"];\n";
+        
+        return resultado;
     }
 
     @Override

@@ -98,7 +98,43 @@ public class SentenciaRepeat extends Instruccion {
     }
     @Override
     public String generarast(Arbol arbol, String anterior) {
-        return null;
+        String stWhile = "n" + arbol.getContador();
+        String doN = "n" + arbol.getContador();
+        String inst = "n" + arbol.getContador();
+        String whileN = "n" + arbol.getContador();
+        String asig = "n" + arbol.getContador();
+        String pC = "n" + arbol.getContador();
+        
+        String resultado = anterior+" ->"+stWhile+";\n"; 
+        
+        
+        resultado += stWhile + "[label=\"CICLO REPEAT\"];\n";
+        resultado += doN + "[label=\"repeat \"];\n";
+        resultado += inst + "[label=\"INSTRUCCIONES\"];\n";
+        resultado += whileN + "[label=\"until\"];\n";
+        resultado += asig + "[label=\"COND\"];\n";
+        resultado += pC + "[label=\";\"];\n";
+        
+        resultado += stWhile + " ->" + doN + ";\n";
+        resultado += stWhile + " ->" + inst + ";\n";
+        resultado += stWhile + " ->" + whileN + ";\n";
+        resultado += stWhile + " ->" + asig + ";\n";
+        resultado += stWhile + " ->" + pC + ";\n";
+        
+        resultado += this.condicion.generarast(arbol, asig);
+        
+        for (var i : this.instrucciones) {
+            if(i ==null ){
+                continue;
+            }
+            
+            String nodoAux = "n" + arbol.getContador();
+                resultado += nodoAux + "[label=\"INSTRUCCION\"];\n";
+                resultado += inst + "-> " + nodoAux + ";\n";
+                resultado += i.generarast(arbol, nodoAux);
+        }
+        
+        return resultado;
     }
 
     @Override

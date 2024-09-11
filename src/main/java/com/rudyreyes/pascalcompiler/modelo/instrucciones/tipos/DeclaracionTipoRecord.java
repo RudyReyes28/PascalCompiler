@@ -39,7 +39,7 @@ public class DeclaracionTipoRecord extends Instruccion {
     
     @Override
     public String generarast(Arbol arbol, String anterior) {
-        return null;
+        return "";
     }
 
     @Override

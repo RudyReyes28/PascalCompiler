@@ -55,7 +55,16 @@ public class OperacionNegacionU extends Instruccion{
 
     @Override
     public String generarast(Arbol arbol, String anterior) {
-        return null;
+        String nodoExp1 = "n" + arbol.getContador();
+        String nodoOp = "n" + arbol.getContador();
+
+        String resultado = anterior + " -> " + nodoOp + ";\n";
+        resultado += anterior + " ->" + nodoExp1 + ";\n";
+
+        resultado += nodoExp1 + "[label=\"EXP\"];\n";
+        resultado += nodoOp + "[label=\"-\"];\n";
+        resultado += this.operandoUnico.generarast(arbol, nodoExp1);
+        return resultado;
     }
 
     @Override

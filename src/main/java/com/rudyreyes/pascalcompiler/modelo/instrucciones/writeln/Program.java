@@ -36,7 +36,25 @@ public class Program extends Instruccion{
     
     @Override
     public String generarast(Arbol arbol, String anterior) {
-        return null;
+        String nodoPP = "n" + arbol.getContador();
+        String nodoP = "n" + arbol.getContador();
+        String nodoExp = "n" + arbol.getContador();
+        String nodoPC = "n" + arbol.getContador();
+
+        String resultado = nodoPP + "[label=\"INICIO\"];\n";
+        resultado += anterior + " -> " + nodoPP + ";\n";
+
+        resultado += nodoP + "[label=\"PROGRAM\"];\n";
+        resultado += nodoExp + "[label=\""+this.id+"\"];\n";
+        resultado += nodoPC + "[label=\";\"];\n";
+
+        resultado += nodoPP + " -> " + nodoP + ";\n";
+        resultado += nodoPP + " -> " + nodoExp + ";\n";
+        resultado += nodoPP + " -> " + nodoPC + ";\n";
+
+        //resultado += this.expresion.generarast(arbol, nodoExp);
+
+        return resultado;
     }
 
     @Override

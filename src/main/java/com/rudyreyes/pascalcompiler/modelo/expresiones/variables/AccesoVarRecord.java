@@ -73,7 +73,23 @@ public class AccesoVarRecord extends Instruccion{
     
     @Override
     public String generarast(Arbol arbol, String anterior) {
-        return null;
+        String stAsig = "n" + arbol.getContador();
+        String idV = "n" + arbol.getContador();
+        String punto = "n" + arbol.getContador();
+        String cN = "n" + arbol.getContador();
+        
+        String resultado = anterior+" ->"+stAsig+";\n"; 
+        
+        resultado += stAsig + "[label=\"ACCESO RECORD\"];\n";
+        resultado += idV + "[label=\""+this.nombreStruct+"\"];\n";
+        resultado += punto + "[label=\".\"];\n";
+        resultado += cN + "[label=\""+this.campo+"\"];\n";
+        
+        resultado += stAsig + " ->" + idV + ";\n";
+        resultado += stAsig + " ->" + punto + ";\n";
+        resultado += stAsig + " ->" + cN + ";\n";
+        
+        return resultado;
     }
 
     @Override

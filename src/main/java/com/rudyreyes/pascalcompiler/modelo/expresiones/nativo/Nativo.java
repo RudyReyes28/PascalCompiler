@@ -30,7 +30,17 @@ public class Nativo extends Instruccion {
     
     @Override
     public String generarast(Arbol arbol, String anterior) {
-        return null;
+        String nodoNativo = "n" + arbol.getContador();//n1
+        String nodoValor = "n" + arbol.getContador();//n2
+
+        String resultado = anterior + " -> " + nodoNativo+";\n";
+
+        resultado += nodoNativo + "[label=\"NATIVO\"];\n";
+        resultado += nodoValor + "[label=\""
+                + this.valor.toString() + "\"];\n";
+
+        resultado += nodoNativo + " -> " + nodoValor+";\n";
+        return resultado;
     }
 
     @Override

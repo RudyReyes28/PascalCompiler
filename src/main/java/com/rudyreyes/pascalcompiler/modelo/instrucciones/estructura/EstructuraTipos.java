@@ -56,7 +56,26 @@ public class EstructuraTipos extends Instruccion{
     
     @Override
     public String generarast(Arbol arbol, String anterior) {
-        return null;
+        String strConst = "n" + arbol.getContador();
+        String instrucci = "n" + arbol.getContador();
+        
+        String cadena= anterior+" ->"+strConst+";\n"; 
+        
+        cadena += strConst + "[label=\"CREACION TIPOS\"];\n";
+        cadena += instrucci + "[label=\"DECLARACIONES TIPOS\"];\n";
+        cadena += strConst + " ->" + instrucci + ";\n";
+        for (var i : this.instrucciones) {
+            if(i ==null ){
+                continue;
+            }
+            
+            String nodoAux = "n" + arbol.getContador();
+                cadena += nodoAux + "[label=\"INSTRUCCION\"];\n";
+                cadena += instrucci + "-> " + nodoAux + ";\n";
+                cadena += i.generarast(arbol, nodoAux);
+        }
+        
+        return cadena;
     }
 
     @Override

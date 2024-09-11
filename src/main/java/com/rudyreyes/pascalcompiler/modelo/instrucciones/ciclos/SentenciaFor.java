@@ -120,7 +120,52 @@ public class SentenciaFor extends Instruccion{
     }
     @Override
     public String generarast(Arbol arbol, String anterior) {
-        return null;
+        //for variable-name := initial_value to final_value do
+        String stFor = "n" + arbol.getContador();
+        String forN = "n" + arbol.getContador();
+        String asig = "n" + arbol.getContador();
+        String to = "n" + arbol.getContador();
+        String doA = "n" + arbol.getContador();
+        String valorF = "n" + arbol.getContador();
+        String begin = "n" + arbol.getContador();
+        String inst = "n" + arbol.getContador();
+        String end = "n" + arbol.getContador();
+        
+        String resultado = anterior+" ->"+stFor+";\n"; 
+        
+        resultado += stFor + "[label=\"CICLO FOR\"];\n";
+        resultado += forN + "[label=\"for\"];\n";
+        resultado += asig + "[label=\"ASIG\"];\n";
+        resultado += to + "[label=\"to\"];\n";
+        resultado += valorF + "[label=\"ACTU\"];\n";
+        resultado += doA + "[label=\"do\"];\n";
+        resultado += begin + "[label=\"begin\"];\n";
+        resultado += inst + "[label=\"INSTRUCCIONES\"];\n";
+        resultado += end + "[label=\"end\"];\n";
+        
+        resultado += stFor + " ->" + forN + ";\n";
+        resultado += stFor + " ->" + asig + ";\n";
+        resultado += stFor + " ->" + to + ";\n";
+        resultado += stFor + " ->" + valorF + ";\n";
+        resultado += stFor + " ->" + doA + ";\n";
+        resultado += stFor + " ->" + inst + ";\n";
+        resultado += stFor + " ->" + inst + ";\n";
+        resultado += stFor + " ->" + end + ";\n";
+        
+        resultado += this.asignacion.generarast(arbol, asig);
+        
+        for (var i : this.instrucciones) {
+            if(i ==null ){
+                continue;
+            }
+            
+            String nodoAux = "n" + arbol.getContador();
+                resultado += nodoAux + "[label=\"INSTRUCCION\"];\n";
+                resultado += inst + "-> " + nodoAux + ";\n";
+                resultado += i.generarast(arbol, nodoAux);
+        }
+        
+        return resultado;
     }
 
     @Override

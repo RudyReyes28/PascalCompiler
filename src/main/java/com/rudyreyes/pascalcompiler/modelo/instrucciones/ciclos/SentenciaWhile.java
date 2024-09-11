@@ -97,7 +97,45 @@ public class SentenciaWhile extends Instruccion{
     }
     @Override
     public String generarast(Arbol arbol, String anterior) {
-        return null;
+        String stWhile = "n" + arbol.getContador();
+        String whileN = "n" + arbol.getContador();
+        String asig = "n" + arbol.getContador();
+        String doA = "n" + arbol.getContador();
+        String begin = "n" + arbol.getContador();
+        String inst = "n" + arbol.getContador();
+        String ende = "n" + arbol.getContador();
+        
+        String resultado = anterior+" ->"+stWhile+";\n"; 
+        
+        resultado += stWhile + "[label=\"CICLO WHILE\"];\n";
+        resultado += whileN + "[label=\"while\"];\n";
+        resultado += asig + "[label=\"COND\"];\n";
+        resultado += doA + "[label=\"do\"];\n";
+        resultado += begin + "[label=\"begin\"];\n";
+        resultado += inst + "[label=\"INSTRUCCIONES\"];\n";
+        resultado += ende + "[label=\"end\"];\n";
+        
+        resultado += stWhile + " ->" + whileN + ";\n";
+        resultado += stWhile + " ->" + asig + ";\n";
+        resultado += stWhile + " ->" + doA + ";\n";
+        resultado += stWhile + " ->" + begin + ";\n";
+        resultado += stWhile + " ->" + inst + ";\n";
+        resultado += stWhile + " ->" + ende + ";\n";
+        
+        resultado += this.condicion.generarast(arbol, asig);
+        
+        for (var i : this.instrucciones) {
+            if(i ==null ){
+                continue;
+            }
+            
+            String nodoAux = "n" + arbol.getContador();
+                resultado += nodoAux + "[label=\"INSTRUCCION\"];\n";
+                resultado += inst + "-> " + nodoAux + ";\n";
+                resultado += i.generarast(arbol, nodoAux);
+        }
+        
+        return resultado;
     }
 
     @Override

@@ -156,7 +156,20 @@ public class OperadorOr extends Instruccion{
     
     @Override
     public String generarast(Arbol arbol, String anterior) {
-        return null;
+        String nodoExp1 = "n" + arbol.getContador();
+        String nodoOp = "n" + arbol.getContador();
+        String nodoExp2 = "n" + arbol.getContador();
+
+        String resultado = anterior + " -> " + nodoExp1 + ";\n";
+        resultado += anterior + " ->" + nodoOp + ";\n";
+        resultado += anterior + " ->" + nodoExp2 + ";\n";
+
+        resultado += nodoExp1 + "[label=\"EXP\"];\n";
+        resultado += nodoOp + "[label=\"or\"];\n";
+        resultado += nodoExp2 + "[label=\"EXP\"];\n";
+        resultado += this.operando1.generarast(arbol, nodoExp1);
+        resultado += this.operando2.generarast(arbol, nodoExp2);
+        return resultado;
     }
 
     @Override

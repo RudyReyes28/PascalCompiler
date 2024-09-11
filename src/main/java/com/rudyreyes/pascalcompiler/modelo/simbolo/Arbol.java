@@ -27,6 +27,7 @@ public class Arbol {
     private LinkedList<Instruccion> structs;
     private LinkedList<Object> listaErrores;
     public int contador;
+    public int contadorAct;
 
     public Arbol(LinkedList<Instruccion> instrucciones) {
         this.instrucciones = instrucciones;
@@ -225,6 +226,12 @@ public class Arbol {
     public int getContador() {
         this.contador++;
         return this.contador;
+
+    }
+    
+    public int getContadorAct() {
+        this.contadorAct++;
+        return this.contadorAct;
 
     }
 }

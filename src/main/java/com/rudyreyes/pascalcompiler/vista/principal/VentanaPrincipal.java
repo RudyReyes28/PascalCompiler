@@ -46,6 +46,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         private List<Tipo> listaTipos ;
         private List<EntornoSimbolos> listaSimbolos;
         private String instAST;
+        private Arbol ast;
     /**
      * Creates new form VentanaPrincipal
      */
@@ -329,7 +330,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 var resultado = p.parse();
                 
                 if (resultado != null) {
-                    var ast = new Arbol((LinkedList<Instruccion>) resultado.value);
+                    ast = new Arbol((LinkedList<Instruccion>) resultado.value);
                     var tabla = new TablaSimbolos();
                     var tablaTipos = new TablaTipos();
                     tablaTipos.setNombre("GLOBAL");
@@ -411,7 +412,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
         // TODO add your handling code here:
         // TODO add your handling code here:
-        VentanaReportes ventanaR = new VentanaReportes(this, true, listaTipos, listaSimbolos, instAST);
+        VentanaReportes ventanaR = new VentanaReportes(this, true, listaTipos, listaSimbolos, ast);
         ventanaR.setVisible(true);
     }//GEN-LAST:event_btnReportesActionPerformed
 

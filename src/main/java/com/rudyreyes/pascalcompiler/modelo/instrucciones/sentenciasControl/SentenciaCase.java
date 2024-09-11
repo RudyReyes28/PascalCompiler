@@ -125,7 +125,7 @@ public class SentenciaCase extends Instruccion{
     }
     @Override
     public String generarast(Arbol arbol, String anterior) {
-        return null;
+        return "";
     }
 
     @Override

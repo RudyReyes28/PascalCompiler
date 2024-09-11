@@ -95,7 +95,32 @@ public class AsignacionVarRecord extends Instruccion {
     
     @Override
     public String generarast(Arbol arbol, String anterior) {
-        return null;
+         String stAsig = "n" + arbol.getContador();
+        String idV = "n" + arbol.getContador();
+        String punto = "n" + arbol.getContador();
+        String cN = "n" + arbol.getContador();
+        String igualN = "n" + arbol.getContador();
+        String asig = "n" + arbol.getContador();
+        String pC = "n" + arbol.getContador();
+        
+        String resultado = anterior+" ->"+stAsig+";\n"; 
+        
+        resultado += stAsig + "[label=\"ASIGNACION RECORD\"];\n";
+        resultado += idV + "[label=\""+this.nombreS+"\"];\n";
+        resultado += punto + "[label=\".\"];\n";
+        resultado += cN + "[label=\""+this.campo+"\"];\n";
+        resultado += igualN + "[label=\":=\"];\n";
+        resultado += asig + "[label=\"EXP\"];\n";
+        resultado += pC + "[label=\";\"];\n";
+        
+        resultado += stAsig + " ->" + idV + ";\n";
+        resultado += stAsig + " ->" + punto + ";\n";
+        resultado += stAsig + " ->" + cN + ";\n";
+        resultado += stAsig + " ->" + igualN + ";\n";
+        resultado += stAsig + " ->" + asig + ";\n";
+        resultado += stAsig + " ->" + pC + ";\n";
+        
+        return resultado += this.valor.generarast(arbol, asig);
     }
 
     @Override

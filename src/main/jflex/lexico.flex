@@ -79,7 +79,7 @@ ID = [a-zA-Z][a-zA-Z0-9_]*
 
 //comentarios
 COMENTARIO = ([{](.*)[}])
-COMENTARIOMULTI = "(*"([^*]|\*[^/])*"\*)"
+COMENTARIOMULTI = "(*"([^*])*"*)"
 
 //palabras reservadas
 PROGRAM = "program"

@@ -79,7 +79,19 @@ public class DeclaracionFuncion extends Instruccion {
     }
     @Override
     public String generarast(Arbol arbol, String anterior) {
-        return null;
+        String cadena= " ";
+        for (var i : this.instrucciones) {
+            if(i ==null ){
+                continue;
+            }
+            
+            String nodoAux = "n" + arbol.getContador();
+                cadena += nodoAux + "[label=\"INSTRUCCION\"];\n";
+                cadena += anterior + "-> " + nodoAux + ";\n";
+                cadena += i.generarast(arbol, nodoAux);
+        }
+        
+        return cadena;
     }
 
     @Override

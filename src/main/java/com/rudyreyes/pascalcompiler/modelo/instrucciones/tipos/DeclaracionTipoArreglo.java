@@ -69,7 +69,29 @@ public class DeclaracionTipoArreglo extends Instruccion{
     
     @Override
     public String generarast(Arbol arbol, String anterior) {
-        return null;
+        String declaracion = "n" + arbol.getContador();
+        String resultado = anterior+" ->"+declaracion+";\n";
+        
+        resultado += declaracion + "[label=\"Declaracion Tipo\"];\n";
+        for(String identificador: this.nombresTipos){
+            String idN = "n" + arbol.getContador();
+        String igual= "n" + arbol.getContador();
+        String expN = "n" + arbol.getContador();
+        String fin = "n" + arbol.getContador();
+        
+        
+        resultado += idN + "[label=\""+identificador+"\"];\n";
+        resultado += igual + "[label=\"=\"];\n";
+        resultado += expN + "[label=\"array [op]\"];\n";
+        resultado += fin + "[label=\";\"];\n";
+        
+        resultado += declaracion + " ->" + idN + ";\n";
+        resultado += declaracion + " ->" + igual + ";\n";
+        resultado += declaracion + " ->" + expN + ";\n";
+        resultado += declaracion + " ->" + fin + ";\n";
+            //resultado += this.valor.generarast(arbol, expN);
+        }
+        return resultado;
     }
 
     @Override

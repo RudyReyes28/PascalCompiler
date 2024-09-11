@@ -93,7 +93,36 @@ public class AsignacionVarArreglo extends Instruccion {
     
     @Override
     public String generarast(Arbol arbol, String anterior) {
-        return null;
+        String stAsig = "n" + arbol.getContador();
+        String idV = "n" + arbol.getContador();
+        String cr1 = "n" + arbol.getContador();
+        String pos = "n" + arbol.getContador();
+        String cr2 = "n" + arbol.getContador();
+        String igualN = "n" + arbol.getContador();
+        String asig = "n" + arbol.getContador();
+        String pC = "n" + arbol.getContador();
+        
+        String resultado = anterior+" ->"+stAsig+";\n"; 
+        
+        resultado += stAsig + "[label=\"ASIGNACION ARRAY\"];\n";
+        resultado += idV + "[label=\""+this.id+"\"];\n";
+        resultado += cr1 + "[label=\"[\"];\n";
+        resultado += pos + "[label=\"POS\"];\n";
+        resultado += cr2 + "[label=\"]\"];\n";
+        resultado += igualN + "[label=\":=\"];\n";
+        resultado += asig + "[label=\"EXP\"];\n";
+        resultado += pC + "[label=\";\"];\n";
+        
+        resultado += stAsig + " ->" + idV + ";\n";
+        resultado += stAsig + " ->" + igualN + ";\n";
+        resultado += stAsig + " ->" + cr1 + ";\n";
+        resultado += stAsig + " ->" + pos + ";\n";
+        resultado += stAsig + " ->" + cr2 + ";\n";
+        resultado += stAsig + " ->" + asig + ";\n";
+        resultado += stAsig + " ->" + pC + ";\n";
+        resultado +=this.posicion.generarast(arbol, pos);
+        
+        return resultado += this.asignacion.generarast(arbol, asig);
     }
 
     @Override

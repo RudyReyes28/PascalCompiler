@@ -123,6 +123,57 @@ public class SentenciaIfElseIf extends Instruccion{
 
     @Override
     public String generarActivacion(Arbol arbol, String anterior) {
-        return null;
+        String stIf = "n" + arbol.getContador();
+        String ifN = "n" + arbol.getContador();
+        String exp = "n" + arbol.getContador();
+        String par2 = "n" + arbol.getContador();
+        String llave1 = "n" + arbol.getContador();
+        String inst = "n" + arbol.getContador();
+        String llave2 = "n" + arbol.getContador();
+        String elseN = "n" + arbol.getContador();
+        String llave1E = "n" + arbol.getContador();
+        String instE = "n" + arbol.getContador();
+        String llave2E = "n" + arbol.getContador();
+        
+        String resultado = anterior+" ->"+stIf+";\n"; 
+        resultado += stIf + "[label=\"SentenciaIf-elseIf\"];\n";
+        resultado += ifN + "[label=\"if\"];\n";
+        resultado += exp + "[label=\"EXP\"];\n";
+        resultado += par2 + "[label=\"then\"];\n";
+        resultado += llave1 + "[label=\"begin\"];\n";
+        resultado += inst + "[label=\"INSTRUCCIONES\"];\n";
+        resultado += llave2 + "[label=\"end\"];\n";
+        resultado += elseN + "[label=\"else\"];\n";
+        resultado += llave1E + "[label=\"begin\"];\n";
+        resultado += instE + "[label=\"INSTRUCCIONES\"];\n";
+        resultado += llave2E + "[label=\"end\"];\n";
+        
+        resultado += stIf + " ->" + ifN + ";\n";
+        resultado += stIf + " ->" + exp + ";\n";
+        resultado += stIf + " ->" + par2 + ";\n";
+        resultado += stIf + " ->" + llave1 + ";\n";
+        resultado += stIf + " ->" + inst + ";\n";
+        resultado += stIf + " ->" + llave2 + ";\n";
+        resultado += stIf + " ->" + elseN + ";\n";
+        resultado += stIf + " ->" + llave1E + ";\n";
+        resultado += stIf + " ->" + instE + ";\n";
+        resultado += stIf + " ->" + llave2E + ";\n";
+        resultado += this.condicion.generarast(arbol, exp);
+        
+        for (var i : this.instrucciones) {
+            if(i ==null ){
+                continue;
+            }
+            
+            String nodoAux = "n" + arbol.getContador();
+                resultado += nodoAux + "[label=\"INSTRUCCION\"];\n";
+                resultado += inst + "-> " + nodoAux + ";\n";
+                resultado += i.generarast(arbol, nodoAux);
+        }
+        
+        
+        resultado += instruccionesElseIf.generarast(arbol, elseN);
+
+        return resultado;
     }
 }

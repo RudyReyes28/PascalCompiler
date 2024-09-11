@@ -4,15 +4,21 @@
  */
 package com.rudyreyes.pascalcompiler.vista.principal;
 
+import com.rudyreyes.pascalcompiler.modelo.simbolo.Arbol;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.EntornoSimbolos;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.Simbolo;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.Tipo;
 import com.rudyreyes.pascalcompiler.modelo.simbolo.TipoDato;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -22,15 +28,17 @@ import javax.swing.table.DefaultTableModel;
 public class VentanaReportes extends javax.swing.JDialog {
     List<Tipo> listaTipos;
     List<EntornoSimbolos> listaSimbolos;
-    String insAST;
+    Arbol ast;
+    String instAST;
     /**
      * Creates new form VentanaReportes
      */
-    public VentanaReportes(java.awt.Frame parent, boolean modal, List<Tipo> listaTipos, List<EntornoSimbolos> listaSimbolos, String ast) {
+    public VentanaReportes(java.awt.Frame parent, boolean modal, List<Tipo> listaTipos, List<EntornoSimbolos> listaSimbolos, Arbol ast) {
         super(parent, modal);
         this.listaTipos = listaTipos;
         this.listaSimbolos = listaSimbolos;
-        this.insAST = ast;
+        this.ast = ast;
+        this.instAST = "";
         initComponents();
         this.setLocationRelativeTo(null);
     }
@@ -51,6 +59,7 @@ public class VentanaReportes extends javax.swing.JDialog {
         btnActivacion = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaReportes = new javax.swing.JTable();
+        btnAst = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -91,6 +100,14 @@ public class VentanaReportes extends javax.swing.JDialog {
         ));
         jScrollPane1.setViewportView(tablaReportes);
 
+        btnAst.setFont(new java.awt.Font("Comic Sans MS", 1, 14)); // NOI18N
+        btnAst.setText("AST");
+        btnAst.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAstActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -101,7 +118,8 @@ public class VentanaReportes extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnActivacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnTipos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnSimbolos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnSimbolos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnAst, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(49, 49, 49)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 635, Short.MAX_VALUE)
                 .addContainerGap(29, Short.MAX_VALUE))
@@ -114,13 +132,17 @@ public class VentanaReportes extends javax.swing.JDialog {
                 .addGap(62, 62, 62)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                        .addContainerGap(60, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnSimbolos)
                         .addGap(67, 67, 67)
                         .addComponent(btnTipos)
-                        .addGap(66, 66, 66)
-                        .addComponent(btnActivacion))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE))
-                .addContainerGap(60, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnAst)
+                        .addGap(41, 41, 41)
+                        .addComponent(btnActivacion)
+                        .addGap(112, 112, 112))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -212,6 +234,79 @@ public class VentanaReportes extends javax.swing.JDialog {
         
     }//GEN-LAST:event_btnTiposActionPerformed
 
+    private void btnAstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAstActionPerformed
+        generarAst();
+        
+        if (instAST != null) {
+            String dotFilePath = "ast.dot";
+            String outputFormat = "ast.png";
+            generarArchivoDOT(dotFilePath);
+            generarImagenAST(dotFilePath, outputFormat);
+            try {
+                String imagePath;
+                File imageFile = new File(outputFormat);
+                Desktop desktop = Desktop.getDesktop();
+                desktop.open(imageFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "No se pudo generar el ast");
+        }
+    }//GEN-LAST:event_btnAstActionPerformed
+
+    
+    public  void generarArchivoDOT(String dotFilePath) {
+        try (FileWriter writer = new FileWriter(dotFilePath)) {
+            writer.write(instAST);
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void generarImagenAST(String dotFilePath, String nombreImagen) {
+        String command = "dot -T png -Gratio=fill -o " + nombreImagen + " " + dotFilePath;
+        try {
+            Process process = Runtime.getRuntime().exec(command);
+            int exitCode = process.waitFor();
+            if (exitCode == 0) {
+                JOptionPane.showMessageDialog(null, "Imagen generada");
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al generar la imagen");
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    private void generarAst(){
+        String cadena = "digraph ast{\n";
+        try{
+        //generar AST
+            
+            cadena += "nINICIO[label=\"INICIO\"];\n";
+            cadena += "nINSTRUCCIONES[label=\"INSTRUCCIONES\"];\n";
+            cadena += "nINICIO -> nINSTRUCCIONES;\n";
+
+        for (var i : ast.getInstrucciones()) {
+            
+                String nodoAux = "n" + ast.getContador();
+                cadena += nodoAux + "[label=\"INSTRUCCION\"];\n";
+                cadena += "nINSTRUCCIONES -> " + nodoAux + ";\n";
+                cadena += i.generarast(ast, nodoAux);
+            
+
+        }
+        cadena += "\n}";
+        //System.out.println(cadena);
+            instAST =  cadena;
+        }catch(Exception e){
+            instAST = null;
+        }
+
+        
+    }
+    
     private String obtenerValor(Object valor, TipoDato tipo){
         if(valor instanceof Object[]){
             Object [] resultado = (Object []) valor;
@@ -245,6 +340,7 @@ public class VentanaReportes extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActivacion;
+    private javax.swing.JButton btnAst;
     private javax.swing.JButton btnSimbolos;
     private javax.swing.JButton btnTipos;
     private javax.swing.JLabel jLabel1;

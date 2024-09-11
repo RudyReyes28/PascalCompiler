@@ -36,7 +36,17 @@ public class AccesoVariable extends Instruccion{
     
     @Override
     public String generarast(Arbol arbol, String anterior) {
-        return null;
+        String nodoVar = "n" + arbol.getContador();//n1
+        String nodoValor = "n" + arbol.getContador();//n2
+
+        String resultado = anterior + " -> " + nodoVar+";\n";
+
+        resultado += nodoVar + "[label=\"NATIVO\"];\n";
+        resultado += nodoValor + "[label=\""
+                + this.id + "\"];\n";
+
+        resultado += nodoVar + " -> " + nodoValor+";\n";
+        return resultado;
     }
 
     @Override

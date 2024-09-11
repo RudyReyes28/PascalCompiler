@@ -48,7 +48,23 @@ public class FuncionReturn extends Instruccion{
     }
     @Override
     public String generarast(Arbol arbol, String anterior) {
-        return null;
+        String stAsig = "n" + arbol.getContador();
+        String re = "n" + arbol.getContador();
+        String asig = "n" + arbol.getContador();
+        String pC = "n" + arbol.getContador();
+        
+        String resultado = anterior+" ->"+stAsig+";\n"; 
+        
+        resultado += stAsig + "[label=\"FuncionReturn\"];\n";
+        resultado += re + "[label=\"return\"];\n";
+        resultado += asig + "[label=\"EXP\"];\n";
+        resultado += pC + "[label=\";\"];\n";
+        
+        resultado += stAsig + " ->" + re + ";\n";
+        resultado += stAsig + " ->" + asig + ";\n";
+        resultado += stAsig + " ->" + pC + ";\n";
+        
+        return resultado;
     }
 
     @Override
